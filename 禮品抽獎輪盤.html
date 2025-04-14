@@ -7,223 +7,139 @@
     <style>
         /* 【整體頁面樣式】 */
         body {
-            background: #f0f0f0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            margin: 0;
-            padding: 20px;
+            background: #f0f0f0; /* 設定背景顏色 */
+            font-family: Arial, sans-serif; /* 設定字型 */
+            display: flex; /* 使用flexbox排列內容 */
+            justify-content: center; /* 使內容水平置中 */
+            align-items: center; /* 使內容垂直置中 */
+            height: 100vh; /* 使頁面高度為視窗高度 */
+            flex-direction: column; /* 垂直排列元素 */
+            margin: 0; /* 移除頁面默認邊距 */
+            padding: 20px; /* 設定內邊距 */
         }
 
         /* 【輪盤容器樣式】 */
         .wheel-container {
-            position: relative;
-            /* 設定容器為相對定位 */
-            width: 500px;
-            /* 設定容器寬度 */
-            height: 500px;
-            /* 設定容器高度 */
-            margin-bottom: 30px;
-            /* 設定容器底部間距 */
+            position: relative; /* 設置相對定位，方便放置指針等元素 */
+            width: 500px; /* 設定輪盤寬度 */
+            height: 500px; /* 設定輪盤高度 */
+            margin-bottom: 30px; /* 設定輪盤底部邊距 */
         }
 
         /* 【輪盤主體樣式】 */
         .wheel {
-            width: 100%;
-            /* 讓輪盤佔滿父容器的寬度 */
-            height: 100%;
-            /* 讓輪盤佔滿父容器的高度 */
-            border-radius: 50%;
-            /* 使輪盤呈圓形 */
-            background: conic-gradient(from -22.5deg,
-                    #e74c3c 0deg 45deg,
-                    #3498db 45deg 90deg,
-                    #2ecc71 90deg 135deg,
-                    #f39c12 135deg 180deg,
-                    #9b59b6 180deg 225deg,
-                    #1abc9c 225deg 270deg,
-                    #d35400 270deg 315deg,
-                    #34495e 315deg 360deg);
-            /* 使用圓錐漸變色來分割輪盤 */
-            -webkit-mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px);
-            /* 中心透明，外圓為實心 */
-            mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px);
-            /* 使輪盤有一個圓形的中心 */
-            position: relative;
-            /* 設定為相對定位以便絕對定位標籤 */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            /* 添加陰影使輪盤有立體感 */
+            width: 100%; /* 設定寬度為父容器的100% */
+            height: 100%; /* 設定高度為父容器的100% */
+            border-radius: 50%; /* 使輪盤圓形 */
+            background: conic-gradient(from -18deg,
+                    #e74c3c 0deg 36deg,
+                    #3498db 36deg 72deg,
+                    #2ecc71 72deg 108deg,
+                    #f39c12 108deg 144deg,
+                    #9b59b6 144deg 180deg,
+                    #1abc9c 180deg 216deg,
+                    #d35400 216deg 252deg,
+                    #34495e 252deg 288deg,
+                    #e67e22 288deg 324deg,
+                    #16a085 324deg 360deg); /* 設定圓形輪盤的色帶 */
+            -webkit-mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px); /* 使輪盤中心區域透明 */
+            mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px); /* 使輪盤中心區域透明 */
+            position: relative; /* 設置為相對定位 */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* 添加陰影效果 */
         }
 
         /* 【獎項標籤容器】 */
         .labels {
-            position: absolute;
-            /* 設定容器為絕對定位 */
-            width: 100%;
-            /* 佔滿父容器的寬度 */
-            height: 100%;
-            /* 佔滿父容器的高度 */
-            top: 0;
-            /* 上對齊 */
-            left: 0;
-            /* 左對齊 */
-            pointer-events: none;
-            /* 禁用鼠標事件，讓標籤不影響輪盤的點擊 */
+            position: absolute; /* 絕對定位，讓標籤覆蓋在輪盤上 */
+            width: 100%; /* 設定寬度為100% */
+            height: 100%; /* 設定高度為100% */
+            top: 0; /* 定位於容器頂部 */
+            left: 0; /* 定位於容器左側 */
+            pointer-events: none; /* 禁止標籤與滑鼠交互 */
         }
 
-        /* 【單個獎項標籤樣式 - 已調整向中心靠近】 */
+        /* 【單個獎項標籤樣式】 */
         .label {
-            position: absolute;
-            /* 設定標籤為絕對定位 */
-            width: 200px;
-            /* 設定標籤的寬度 */
-            top: 50%;
-            /* 垂直置中 */
-            left: 50%;
-            /* 水平置中 */
-            transform-origin: 0% 0%;
-            /* 設定旋轉軸為標籤的左上角 */
-            font-size: 18px;
-            /* 設定字體大小 */
-            color: white;
-            /* 設定文字顏色 */
-            font-weight: bold;
-            /* 設定字體加粗 */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-            /* 添加文字陰影使文字更清晰 */
-            text-align: right;
-            /* 文字右對齊 */
-            padding-right: 10px;
-            /* 設置右邊距，將文字往左偏移 */
-            transform: rotate(var(--angle)) translateX(30px);
-            /* 根據角度旋轉並調整文字位置，使其更靠近圓心 */
+            position: absolute; /* 絕對定位 */
+            width: 200px; /* 設定標籤寬度 */
+            top: 50%; /* 垂直置中標籤 */
+            left: 50%; /* 水平置中標籤 */
+            transform-origin: 0% 0%; /* 設定旋轉中心 */
+            font-size: 18px; /* 設定字型大小 */
+            color: white; /* 設定字體顏色為白色 */
+            font-weight: bold; /* 設定字型為加粗 */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* 設定文字陰影 */
+            text-align: right; /* 文字右對齊 */
+            padding-right: 10px; /* 文字右邊距 */
+            transform: rotate(var(--angle)) translateX(30px); /* 根據計算的角度旋轉標籤並移動 */
         }
 
         /* 【指針容器樣式】 */
         .pointer-container {
-            position: absolute;
-            /* 設定為絕對定位 */
-            width: 100%;
-            /* 佔滿父容器的寬度 */
-            height: 100%;
-            /* 佔滿父容器的高度 */
-            top: 0;
-            /* 上對齊 */
-            left: 0;
-            /* 左對齊 */
-            pointer-events: none;
-            /* 禁用鼠標事件，讓指針不影響輪盤的點擊 */
-            z-index: 10;
-            /* 設定層級，使指針在輪盤之上 */
+            position: absolute; /* 絕對定位 */
+            width: 100%; /* 設定寬度為100% */
+            height: 100%; /* 設定高度為100% */
+            top: 0; /* 定位於容器頂部 */
+            left: 0; /* 定位於容器左側 */
+            pointer-events: none; /* 禁止指針與滑鼠交互 */
+            z-index: 10; /* 設定指針的層級 */
         }
 
         /* 【劍形指針樣式】 */
         #pointer {
-            position: absolute;
-            /* 設定為絕對定位 */
-            width: 40px;
-            /* 設定指針寬度 */
-            height: 180px;
-            /* 設定指針高度 */
-            background-color: #000;
-            /* 設定指針顏色 */
-            top: 50%;
-            /* 垂直置中 */
-            left: 50%;
-            /* 水平置中 */
-            transform: translate(-50%, -100%) rotate(0deg);
-            /* 使指針的底部對齊圓心，並旋轉 */
-            transform-origin: bottom center;
-            /* 設定指針的旋轉軸為底部中心 */
-            z-index: 11;
-            /* 設定層級，確保指針在輪盤之上 */
-            clip-path: polygon(50% 0%,
-                    /* 劍尖 */
-                    60% 10%,
-                    /* 收窄 */
-                    55% 85%,
-                    /* 劍身 */
-                    45% 85%,
-                    /* 劍身 */
-                    40% 10%
-                    /* 收窄 */
-                );
-            /* 使用多邊形裁剪來創建劍形指針 */
-            transition: transform 4s cubic-bezier(0.2, 0.6, 0.2, 1);
-            /* 設定指針旋轉動畫 */
+            position: absolute; /* 絕對定位 */
+            width: 40px; /* 設定指針寬度 */
+            height: 180px; /* 設定指針高度 */
+            background-color: #000; /* 設定指針顏色為黑色 */
+            top: 50%; /* 垂直置中指針 */
+            left: 50%; /* 水平置中指針 */
+            transform: translate(-50%, -100%) rotate(0deg); /* 初始位置和角度 */
+            transform-origin: bottom center; /* 設定旋轉中心在底部中間 */
+            z-index: 11; /* 設定指針的層級 */
+            clip-path: polygon(50% 0%, 60% 10%, 55% 85%, 45% 85%, 40% 10%); /* 設定指針形狀 */
+            transition: transform 4s cubic-bezier(0.2, 0.6, 0.2, 1); /* 設定旋轉動畫效果 */
         }
 
         /* 【中心圓點樣式】 */
         .center-circle {
-            position: absolute;
-            /* 設定為絕對定位 */
-            width: 30px;
-            /* 設定圓點的直徑 */
-            height: 30px;
-            /* 設定圓點的直徑 */
-            background: rgb(0, 0, 0);
-            /* 設定圓點顏色 */
-            border-radius: 50%;
-            /* 使圓點為圓形 */
-            top: 50%;
-            /* 垂直置中 */
-            left: 50%;
-            /* 水平置中 */
-            transform: translate(-50%, -50%);
-            /* 調整圓點位置使其完全居中 */
-            border: 3px solid #000000;
-            /* 添加圓點邊框 */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            /* 添加陰影使圓點更突出 */
-            z-index: 15;
-            /* 設定層級，使圓點位於最上層 */
+            position: absolute; /* 絕對定位 */
+            width: 30px; /* 設定圓點大小 */
+            height: 30px; /* 設定圓點大小 */
+            background: rgb(0, 0, 0); /* 設定圓點顏色 */
+            border-radius: 50%; /* 使圓點圓形 */
+            top: 50%; /* 垂直置中 */
+            left: 50%; /* 水平置中 */
+            transform: translate(-50%, -50%); /* 讓圓點置中 */
+            border: 3px solid #000000; /* 設定圓點邊框 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* 添加圓點陰影 */
+            z-index: 15; /* 設定圓點層級 */
         }
 
         /* 【旋轉按鈕樣式】 */
         button {
-            margin-top: 20px;
-            /* 設定按鈕與輪盤的間距 */
-            padding: 15px 40px;
-            /* 設定按鈕內部間距 */
-            font-size: 18px;
-            /* 設定按鈕文字大小 */
-            border-radius: 30px;
-            /* 設定按鈕圓角 */
-            border: none;
-            /* 去掉按鈕邊框 */
-            background: #3498db;
-            /* 設定按鈕背景顏色 */
-            color: white;
-            /* 設定文字顏色 */
-            cursor: pointer;
-            /* 設定鼠標懸停樣式 */
-            transition: all 0.3s;
-            /* 設定按鈕過渡效果 */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            /* 添加按鈕陰影 */
+            margin-top: 20px; /* 設定按鈕上邊距 */
+            padding: 15px 40px; /* 設定按鈕內邊距 */
+            font-size: 18px; /* 設定字型大小 */
+            border-radius: 30px; /* 設定圓角 */
+            border: none; /* 移除邊框 */
+            background: #3498db; /* 設定背景顏色 */
+            color: white; /* 設定字體顏色為白色 */
+            cursor: pointer; /* 設定游標樣式 */
+            transition: all 0.3s; /* 設定過渡動畫 */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* 設定陰影 */
         }
 
         button:hover {
-            background: #2980b9;
-            /* 懸停時改變背景顏色 */
-            transform: translateY(-2px);
-            /* 懸停時微微向上移動 */
-            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
-            /* 懸停時加強陰影 */
+            background: #2980b9; /* 設定鼠標懸停時的背景顏色 */
+            transform: translateY(-2px); /* 設定懸停時按鈕上升效果 */
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15); /* 設定懸停時的陰影效果 */
         }
 
         button:disabled {
-            background: #95a5a6;
-            /* 禁用狀態下更改背景顏色 */
-            cursor: not-allowed;
-            /* 禁用狀態下禁止點擊 */
-            transform: none;
-            /* 禁用狀態下移除移動效果 */
-            box-shadow: none;
-            /* 禁用狀態下移除陰影 */
+            background: #95a5a6; /* 禁用按鈕的背景顏色 */
+            cursor: not-allowed; /* 禁用狀態的游標 */
+            transform: none; /* 禁用狀態無變化 */
+            box-shadow: none; /* 禁用狀態去除陰影 */
         }
     </style>
 </head>
@@ -245,75 +161,128 @@
     <!-- 【控制按鈕】 -->
     <button id="spin-btn">開始旋轉</button>
 
-   <script>
-    // 【獎項設定】設定每個獎項名稱與角度微調 offset
-    const options = [
-        { text: "餐飲折扣劵", offset: -5 },       // 索引 0: 設定獎項 "餐飲折扣劵" 並設定微調偏移量 -5 度
-        { text: "藝文限量紀念品", offset: -5 },   // 索引 1: 設定獎項 "藝文限量紀念品" 並設定微調偏移量 -5 度
-        { text: "住宿優惠券", offset: -5 },       // 索引 2: 設定獎項 "住宿優惠券" 並設定微調偏移量 -5 度
-        { text: "餐飲折扣劵", offset: -5 },       // 索引 3: 設定獎項 "餐飲折扣劵" 並設定微調偏移量 -5 度
-        { text: "藝文限量紀念品", offset: -5 },   // 索引 4: 設定獎項 "藝文限量紀念品" 並設定微調偏移量 -5 度
-        { text: "住宿優惠券", offset: -5 },       // 索引 5: 設定獎項 "住宿優惠券" 並設定微調偏移量 -5 度
-        { text: "餐飲折扣劵", offset: -5 },       // 索引 6: 設定獎項 "餐飲折扣劵" 並設定微調偏移量 -5 度
-        { text: "藝文限量紀念品", offset: -5 }    // 索引 7: 設定獎項 "藝文限量紀念品" 並設定微調偏移量 -5 度
-    ];
+    <script>
+        // 【獎項設定】共10格，每格36度
+        const options = [
+            { text: "住宿優惠券", offset: 13 },
+            { text: "擊球優惠劵", offset: 5 },
+            { text: "餐飲折扣劵", offset: 13 },
+            { text: "擊球優惠劵", offset: 13 },
+            { text: "餐飲折扣劵", offset: 13 },
+            { text: "擊球優惠劵", offset: 13 },
+            { text: "餐飲折扣劵", offset: 13 },
+            { text: "擊球優惠劵", offset: 13 },
+            { text: "餐飲折扣劵", offset: 13 },
+            { text: "餐飲折扣劵", offset: 13 }
+        ];
 
-    // 【DOM元素取得】取得頁面上的 DOM 元素
-    const pointer = document.getElementById('pointer');         // 取得指針元素
-    const spinBtn = document.getElementById('spin-btn');        // 取得開始旋轉按鈕元素
-    const labelsContainer = document.getElementById('labels');  // 取得顯示獎項文字標籤的容器
+        // 【DOM元素取得】  
+        const pointer = document.getElementById('pointer');  /* 取得指針元素 */
+        const spinBtn = document.getElementById('spin-btn');  /* 取得旋轉按鈕元素 */
+        const labelsContainer = document.getElementById('labels'); /* 取得標籤容器 */
+        let hasSpun = false; /* 設定輪盤是否已經旋轉過 */
 
-    let hasSpun = false;  // 用來標記是否已經轉過輪盤
+        // 【初始化獎項標籤】  
+        function initLabels() {
+            labelsContainer.innerHTML = ''; /* 清空標籤容器 */
+            const angleStep = 360 / options.length; /* 每格的角度 */
 
-    // 【初始化獎項標籤】根據設定生成並顯示獎項文字標籤
-    function initLabels() {
-        labelsContainer.innerHTML = '';  // 清空容器，避免重複顯示
-        const angleStep = 360 / options.length;  // 每格的角度（360 / 8 = 45）
+            options.forEach((item, i) => {
+                const label = document.createElement('div'); /* 創建新的標籤元素 */
+                label.className = 'label'; /* 設定標籤的class */
+                const indexOffset = (i + 1) % options.length; /* 計算偏移量 */
+                const angle = indexOffset * angleStep + angleStep / 2 - 18 + item.offset; /* 計算每個標籤的角度 */
 
-        options.forEach((item, i) => {
-            const label = document.createElement('div');  // 創建一個新的 div 元素來顯示獎項文字
-            label.className = 'label';                    // 為標籤元素套用 'label' 類別
+               if (i === 1) { 
+    // 【索引1】垂直排列
+    label.style.transform = `rotate(${angle}deg) translate(0, 0px)`; /* 設定旋轉與偏移 */
+    const span = document.createElement('span'); /* 創建容器 span 元素 */
+    span.style.display = 'inline-block'; /* 設定為區塊元素 */
+    span.style.transform = 'rotate(283deg)'; /* 整段文字右轉 90 度 */
 
-            // 【調整角度位置】計算每個標籤的位置，避免視覺錯位
-            const indexOffset = (i - 1 + options.length) % options.length;  // 進行位置偏移
-            const angle = indexOffset * angleStep + angleStep / 2 - 22.5 + item.offset; // 計算每個標籤的角度
-            label.style.setProperty('--angle', `${angle}deg`);  // 使用自訂的 CSS 變數來設置角度
+    const chars = item.text.split(''); /* 把文字分成每個字 */
+    chars.forEach(char => {
+        const charSpan = document.createElement('span'); /* 為每個字創建 span */
+        charSpan.textContent = char; /* 設定文字內容 */
+        charSpan.style.display = 'block'; /* 垂直堆疊 */
+        charSpan.style.lineHeight = '1';  /* 緊貼排列 */
+        charSpan.style.margin = '0';      /* 無外邊距 */
+        charSpan.style.padding = '0';     /* 無內邊距 */
+        const adjustX = -10;
+        const adjustY = 0;
+        label.style.transform = `rotate(${angle}deg) translate(${adjustX}px, ${adjustY}px)`;
+        span.appendChild(charSpan); /* 加入容器 span 中 */
+    });
 
-            // 【左右 + 上下翻轉】針對特定的獎項進行翻轉處理（索引 4、5、6）
-            if (i === 4 || i === 5 || i === 6) {
-                const span = document.createElement('span');     // 創建一個包住文字的 span 元素
-                span.textContent = item.text;                    // 設定 span 文字為該獎項的名稱
-                span.style.display = 'inline-block';             // 設定 span 為區塊顯示
-                span.style.transform = 'scale(-1, -1)';          // 左右 + 上下翻轉
-                label.appendChild(span);                         // 將翻轉後的 span 加到標籤內
-            } else {
-                label.textContent = item.text;  // 其餘標籤正常顯示文字
-            }
+    label.appendChild(span); /* 將整個 span 加入標籤 */
+}
+else {
+                    label.style.setProperty('--angle', `${angle}deg`); /* 設定標籤的角度 */
+                    
+                    if (i === 2 || i === 3 || i === 4 || i === 5) {
+                        const span = document.createElement('span'); /* 創建span元素 */
+                        span.textContent = item.text; /* 設定文字 */
+                        span.style.display = 'inline-block'; /* 設定為區塊元素 */
+                        span.style.transform = 'scale(-1, -1)'; /* 反轉文字 */
+                        label.appendChild(span); /* 把文字加入標籤 */
+                    } else if (i === 6) {
+                        const span = document.createElement('span'); /* 創建span元素 */
+                        span.style.display = 'inline-block'; /* 設定為區塊元素 */
+                        span.style.transform = 'scale(-1, -1)'; /* 反轉文字 */
+                        const chars = item.text.split(''); /* 把文字分成每個字母 */
+                        chars.forEach(char => {
+                            const charSpan = document.createElement('span'); /* 創建每個字母的span元素 */
+                            charSpan.textContent = char; /* 設定字母 */
+                            charSpan.style.display = 'inline-block'; /* 設定為區塊元素 */
+                            charSpan.style.transform = 'rotate(-90deg)'; /* 旋轉字母 */
+                            span.appendChild(charSpan); /* 把字母加入span */
+                        });
+                        label.appendChild(span); /* 把span加入標籤 */
+                    } else {
+                        label.textContent = item.text; /* 設定標籤的文字 */
+                    }
+                }
 
-            labelsContainer.appendChild(label);  // 將標籤加入容器中
-        });
-    }
-
-    // 【載入後初始化】當頁面完成載入後執行初始化
-    window.addEventListener('load', initLabels);
-
-    // 【旋轉按鈕點擊事件】當用戶點擊按鈕時開始旋轉輪盤
-    spinBtn.addEventListener('click', () => {
-        if (hasSpun) {
-            alert("本輪已轉完，請重新整理頁面再試一次！");  // 若已經轉過，顯示提示並禁止重轉
-            return;
+                labelsContainer.appendChild(label); /* 把標籤加入標籤容器 */
+            });
         }
 
-        hasSpun = true;  // 標記已經轉過輪盤
-        const randomDegree = 360 * 5 + Math.floor(Math.random() * 360);  // 計算隨機旋轉角度（五圈 + 隨機角度）
-        pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`;  // 設定指針旋轉的角度
-    });
-</script>
+        // 【載入時初始化】  
+window.addEventListener('load', initLabels); /* 頁面加載時初始化獎項標籤 */
 
+// 【新增：旋轉次數限制功能】
+let spinCount = parseInt(localStorage.getItem('spinCount')) || 0; // 從 localStorage 取得旋轉次數，若無則為 0
+const maxSpins = 1000; // 最多可旋轉次數為 1000 次
 
+// 建立顯示剩餘次數的元素
+const spinCountDisplay = document.createElement('div'); // 建立顯示區塊
+spinCountDisplay.style.marginTop = '10px'; // 設定上邊距
+spinCountDisplay.style.fontSize = '16px'; // 設定字型大小
+spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 初始顯示內容為剩餘次數
+document.body.appendChild(spinCountDisplay); // 將顯示區塊加入畫面中
 
+// 【旋轉按鈕事件】  
+spinBtn.addEventListener('click', () => {
+    if (spinCount >= maxSpins) {
+        alert("您已達到最大旋轉次數！"); /* 達到限制次數提示 */
+        return;
+    }
 
+    if (hasSpun) {
+        alert("本輪已轉完，請重新整理頁面再試一次！"); /* 如果已經轉過，顯示提示 */
+        return;
+    }
 
+    hasSpun = true; /* 標記為已經轉過 */
+    spinCount++; // 增加旋轉次數
+    localStorage.setItem('spinCount', spinCount); // 將旋轉次數儲存到 localStorage 中
+    spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新顯示剩餘次數
+
+    const randomDegree = 360 * 5 + Math.floor(Math.random() * 360); /* 計算隨機旋轉角度 */
+    pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`; /* 旋轉指針 */
+});
+
+    </script>
 </body>
 
 </html>
