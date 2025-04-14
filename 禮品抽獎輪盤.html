@@ -286,37 +286,17 @@ spinBtn.addEventListener('click', () => {
 
 // 【重置旋轉次數功能】
 function resetSpinCount() {
-    const passwordDiv = document.createElement('div'); // 創建一個新的容器來顯示密碼框
-    const passwordInput = document.createElement('input'); // 創建密碼輸入框
-    passwordInput.type = 'password'; // 設定為密碼輸入框
-    passwordInput.placeholder = '請輸入密碼'; // 設定提示文字
+    const enteredPassword = prompt("請輸入密碼以重置旋轉次數："); // 使用 prompt 顯示密碼輸入框
 
-    // 設定輸入框的樣式
-    passwordInput.style.padding = '10px';
-    passwordInput.style.fontSize = '16px';
-    passwordInput.style.marginBottom = '10px';
-
-    const submitButton = document.createElement('button'); // 創建提交按鈕
-    submitButton.textContent = '提交'; // 設定按鈕文字
-
-    // 當提交按鈕被點擊時，檢查密碼
-    submitButton.addEventListener('click', () => {
-        const correctPassword = 'yourpassword'; // 設定正確密碼
-        if (passwordInput.value === correctPassword) { // 如果密碼正確
-            spinCount = 0; // 重置旋轉次數
-            localStorage.setItem('spinCount', spinCount); // 更新 localStorage
-            spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新顯示
-            alert("旋轉次數已重置！");
-            passwordDiv.remove(); // 移除密碼輸入框
-        } else {
-            alert("密碼錯誤，無法重置次數！");
-        }
-    });
-
-    // 將密碼框和按鈕顯示在頁面上
-    passwordDiv.appendChild(passwordInput);
-    passwordDiv.appendChild(submitButton);
-    document.body.appendChild(passwordDiv);
+    const correctPassword = 'yourpassword'; // 設定正確密碼
+    if (enteredPassword === correctPassword) { // 如果密碼正確
+        spinCount = 0; // 重置旋轉次數
+        localStorage.setItem('spinCount', spinCount); // 更新 localStorage
+        spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新顯示
+        alert("旋轉次數已重置！");
+    } else {
+        alert("密碼錯誤，無法重置次數！");
+    }
 }
 
 // 【創建重置按鈕】
