@@ -252,7 +252,7 @@ window.addEventListener('load', initLabels); /* 頁面加載時初始化獎項�
 
 // 【新增：旋轉次數限制功能】
 let spinCount = localStorage.getItem('spinCount') ? parseInt(localStorage.getItem('spinCount')) : 0; // 讀取存儲的旋轉次數
-const maxSpins = 3000; // 最多可旋轉次數
+const maxSpins = 1000; // 最多可旋轉次數
 
 // 建立顯示剩餘次數的元素
 const spinCountDisplay = document.createElement('div'); // 建立顯示區塊
@@ -278,7 +278,9 @@ spinBtn.addEventListener('click', () => {
     localStorage.setItem('spinCount', spinCount); // 更新 localStorage 中的旋轉次數
     spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新剩餘次數顯示
 
-    const randomDegree = 360 * 5 + Math.floor(Math.random() * 360); /* 計算隨機旋轉角度 */
+    // 【避免指針停在交界處】 
+    // 計算隨機旋轉角度，並且加入一個小偏移量 (1度)，確保不會停在交界處
+    const randomDegree = 360 * 5 + Math.floor(Math.random() * 360) + 1; /* 增加 1 度的隨機偏移 */
     pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`; /* 旋轉指針 */
 });
 
@@ -330,7 +332,6 @@ resetButton.addEventListener('click', resetSpinCount);
 
 // 將重置按鈕加入畫面
 document.body.appendChild(resetButton);
-
 
     </script>
 </body>
