@@ -251,17 +251,17 @@ else {
 window.addEventListener('load', initLabels); /* 頁面加載時初始化獎項標籤 */
 
 // 【新增：旋轉次數限制功能】
-let spinCount = parseInt(localStorage.getItem('spinCount')) || 0; // 從 localStorage 取得旋轉次數，若無則為 0
-const maxSpins = 1000; // 最多可旋轉次數為 1000 次
+let spinCount = localStorage.getItem('spinCount') ? parseInt(localStorage.getItem('spinCount')) : 0; // 讀取存儲的旋轉次數
+const maxSpins = 1000; // 最多可旋轉次數
 
 // 建立顯示剩餘次數的元素
 const spinCountDisplay = document.createElement('div'); // 建立顯示區塊
 spinCountDisplay.style.marginTop = '10px'; // 設定上邊距
 spinCountDisplay.style.fontSize = '16px'; // 設定字型大小
-spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 初始顯示內容為剩餘次數
+spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 初始顯示內容
 document.body.appendChild(spinCountDisplay); // 將顯示區塊加入畫面中
 
-// 【旋轉按鈕事件】  
+// 【旋轉按鈕事件】
 spinBtn.addEventListener('click', () => {
     if (spinCount >= maxSpins) {
         alert("您已達到最大旋轉次數！"); /* 達到限制次數提示 */
@@ -275,12 +275,62 @@ spinBtn.addEventListener('click', () => {
 
     hasSpun = true; /* 標記為已經轉過 */
     spinCount++; // 增加旋轉次數
-    localStorage.setItem('spinCount', spinCount); // 將旋轉次數儲存到 localStorage 中
-    spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新顯示剩餘次數
+    localStorage.setItem('spinCount', spinCount); // 更新 localStorage 中的旋轉次數
+    spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新剩餘次數顯示
 
     const randomDegree = 360 * 5 + Math.floor(Math.random() * 360); /* 計算隨機旋轉角度 */
     pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`; /* 旋轉指針 */
 });
+
+// 【重置旋轉次數功能】
+function resetSpinCount() {
+    const passwordDiv = document.createElement('div'); // 創建一個新的容器來顯示密碼框
+    const passwordInput = document.createElement('input'); // 創建密碼輸入框
+    passwordInput.type = 'password'; // 設定為密碼輸入框
+    passwordInput.placeholder = '請輸入密碼'; // 設定提示文字
+
+    // 設定輸入框的樣式
+    passwordInput.style.padding = '10px';
+    passwordInput.style.fontSize = '16px';
+    passwordInput.style.marginBottom = '10px';
+
+    const submitButton = document.createElement('button'); // 創建提交按鈕
+    submitButton.textContent = '提交'; // 設定按鈕文字
+
+    // 當提交按鈕被點擊時，檢查密碼
+    submitButton.addEventListener('click', () => {
+        const correctPassword = 'yourpassword'; // 設定正確密碼
+        if (passwordInput.value === correctPassword) { // 如果密碼正確
+            spinCount = 0; // 重置旋轉次數
+            localStorage.setItem('spinCount', spinCount); // 更新 localStorage
+            spinCountDisplay.textContent = `剩餘次數：${maxSpins - spinCount}`; // 更新顯示
+            alert("旋轉次數已重置！");
+            passwordDiv.remove(); // 移除密碼輸入框
+        } else {
+            alert("密碼錯誤，無法重置次數！");
+        }
+    });
+
+    // 將密碼框和按鈕顯示在頁面上
+    passwordDiv.appendChild(passwordInput);
+    passwordDiv.appendChild(submitButton);
+    document.body.appendChild(passwordDiv);
+}
+
+// 【創建重置按鈕】
+const resetButton = document.createElement('button'); // 建立按鈕
+resetButton.textContent = '重置旋轉次數'; // 設定按鈕文字
+resetButton.style.marginTop = '10px'; // 設定按鈕上邊距
+resetButton.style.padding = '10px 20px'; // 設定按鈕內邊距
+resetButton.style.fontSize = '16px'; // 設定按鈕字型大小
+resetButton.style.cursor = 'pointer'; // 設定按鈕的鼠標樣式為指針
+
+// 當按下重置按鈕時，調用重置旋轉次數函數
+resetButton.addEventListener('click', resetSpinCount);
+
+// 將重置按鈕加入畫面
+document.body.appendChild(resetButton);
+
 
     </script>
 </body>
