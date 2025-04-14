@@ -246,53 +246,58 @@
     <button id="spin-btn">開始旋轉</button>
 
     <script>
-        // 【獎項設定】顯示順序以及每個項目的角度偏移量
-        const options = [
-            { text: "餐飲折扣劵", offset: -5 },       // 不需要偏移
-            { text: "藝文限量紀念品", offset: -5 },   // 微調5度
-            { text: "住宿優惠券", offset: -5 },      // 微調-5度
-            { text: "餐飲折扣劵", offset: -5 },
-            { text: "藝文限量紀念品", offset: -5 },  // 微調10度
-            { text: "住宿優惠券", offset: -5 },     // 微調-10度
-            { text: "餐飲折扣劵", offset: -5 },
-            { text: "藝文限量紀念品", offset: -5 }
-        ];
+    // 【獎項設定】設定項目與偏移角度
+    const options = [
+        { text: "餐飲折扣劵", offset: -5 },
+        { text: "藝文限量紀念品", offset: -5 },
+        { text: "住宿優惠券", offset: -5 },
+        { text: "餐飲折扣劵", offset: -5 },
+        { text: "藝文限量紀念品", offset: -5 },
+        { text: "住宿優惠券", offset: -5 },
+        { text: "餐飲折扣劵", offset: -5 },
+        { text: "藝文限量紀念品", offset: -5 }
+    ];
 
-        // 【DOM元素取得】
-        const pointer = document.getElementById('pointer');
-        const spinBtn = document.getElementById('spin-btn');
-        const labelsContainer = document.getElementById('labels');
+    // 【DOM元素取得】
+    const pointer = document.getElementById('pointer');         // 指針
+    const spinBtn = document.getElementById('spin-btn');        // 旋轉按鈕
+    const labelsContainer = document.getElementById('labels');  // 獎項容器
 
-        // 【初始化獎項標籤】
-        function initLabels() {
-            labelsContainer.innerHTML = '';  // 清空容器
-            const angleStep = 360 / options.length;  // 每個獎項所佔的角度
+    let hasSpun = false;  // 【旗標】紀錄是否已經轉過
 
-            options.forEach((item, i) => {
-                const label = document.createElement('div');  // 創建標籤
-                label.className = 'label';  // 設定標籤類別
+    // 【初始化獎項標籤】
+    function initLabels() {
+        labelsContainer.innerHTML = '';  // 清空
+        const angleStep = 360 / options.length;  // 每格角度
 
-                // 計算每個標籤的角度，並考慮偏移量
-                const angle = i * angleStep + angleStep / 2 - 22.5 + item.offset;
+        options.forEach((item, i) => {
+            const label = document.createElement('div');  // 建立元素
+            label.className = 'label';
 
-                // 設定每個標籤的旋轉角度
-                label.style.setProperty('--angle', `${angle}deg`);
+            const angle = i * angleStep + angleStep / 2 - 22.5 + item.offset;
+            label.style.setProperty('--angle', `${angle}deg`);
 
-                // 設置標籤內容
-                label.textContent = item.text;
-                labelsContainer.appendChild(label);  // 把標籤加入容器
-            });
+            label.textContent = item.text;
+            labelsContainer.appendChild(label);
+        });
+    }
+
+    // 【載入後初始化】
+    window.addEventListener('load', initLabels);
+
+    // 【按鈕點擊 - 開始旋轉】
+    spinBtn.addEventListener('click', () => {
+        if (hasSpun) {
+            alert("本輪已轉完，請重新整理頁面再試一次！");
+            return;
         }
 
-        // 【事件監聽器設定】載入頁面後初始化標籤
-        window.addEventListener('load', initLabels);
+        hasSpun = true;  // 標記為已轉
 
-        // 【按鈕點擊事件 - 旋轉輪盤】
-        spinBtn.addEventListener('click', () => {
-            const randomDegree = 360 * 5 + Math.floor(Math.random() * 360);  // 隨機生成旋轉角度
-            pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`;  // 保留位移再加旋轉
-        });
-    </script>
+        const randomDegree = 360 * 5 + Math.floor(Math.random() * 360);  // 隨機旋轉
+        pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`;  // 指針旋轉
+    });
+</script>
 
 </body>
 
