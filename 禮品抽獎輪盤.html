@@ -245,59 +245,74 @@
     <!-- 【控制按鈕】 -->
     <button id="spin-btn">開始旋轉</button>
 
-    <script>
-    // 【獎項設定】設定項目與偏移角度
+   <script>
+    // 【獎項設定】設定每個獎項名稱與角度微調 offset
     const options = [
-        { text: "餐飲折扣劵", offset: -5 },
-        { text: "藝文限量紀念品", offset: -5 },
-        { text: "住宿優惠券", offset: -5 },
-        { text: "餐飲折扣劵", offset: -5 },
-        { text: "藝文限量紀念品", offset: -5 },
-        { text: "住宿優惠券", offset: -5 },
-        { text: "餐飲折扣劵", offset: -5 },
-        { text: "藝文限量紀念品", offset: -5 }
+        { text: "餐飲折扣劵", offset: -5 },       // 索引 0: 設定獎項 "餐飲折扣劵" 並設定微調偏移量 -5 度
+        { text: "藝文限量紀念品", offset: -5 },   // 索引 1: 設定獎項 "藝文限量紀念品" 並設定微調偏移量 -5 度
+        { text: "住宿優惠券", offset: -5 },       // 索引 2: 設定獎項 "住宿優惠券" 並設定微調偏移量 -5 度
+        { text: "餐飲折扣劵", offset: -5 },       // 索引 3: 設定獎項 "餐飲折扣劵" 並設定微調偏移量 -5 度
+        { text: "藝文限量紀念品", offset: -5 },   // 索引 4: 設定獎項 "藝文限量紀念品" 並設定微調偏移量 -5 度
+        { text: "住宿優惠券", offset: -5 },       // 索引 5: 設定獎項 "住宿優惠券" 並設定微調偏移量 -5 度
+        { text: "餐飲折扣劵", offset: -5 },       // 索引 6: 設定獎項 "餐飲折扣劵" 並設定微調偏移量 -5 度
+        { text: "藝文限量紀念品", offset: -5 }    // 索引 7: 設定獎項 "藝文限量紀念品" 並設定微調偏移量 -5 度
     ];
 
-    // 【DOM元素取得】
-    const pointer = document.getElementById('pointer');         // 指針
-    const spinBtn = document.getElementById('spin-btn');        // 旋轉按鈕
-    const labelsContainer = document.getElementById('labels');  // 獎項容器
+    // 【DOM元素取得】取得頁面上的 DOM 元素
+    const pointer = document.getElementById('pointer');         // 取得指針元素
+    const spinBtn = document.getElementById('spin-btn');        // 取得開始旋轉按鈕元素
+    const labelsContainer = document.getElementById('labels');  // 取得顯示獎項文字標籤的容器
 
-    let hasSpun = false;  // 【旗標】紀錄是否已經轉過
+    let hasSpun = false;  // 用來標記是否已經轉過輪盤
 
-    // 【初始化獎項標籤】
+    // 【初始化獎項標籤】根據設定生成並顯示獎項文字標籤
     function initLabels() {
-        labelsContainer.innerHTML = '';  // 清空
-        const angleStep = 360 / options.length;  // 每格角度
+        labelsContainer.innerHTML = '';  // 清空容器，避免重複顯示
+        const angleStep = 360 / options.length;  // 每格的角度（360 / 8 = 45）
 
         options.forEach((item, i) => {
-            const label = document.createElement('div');  // 建立元素
-            label.className = 'label';
+            const label = document.createElement('div');  // 創建一個新的 div 元素來顯示獎項文字
+            label.className = 'label';                    // 為標籤元素套用 'label' 類別
 
-            const angle = i * angleStep + angleStep / 2 - 22.5 + item.offset;
-            label.style.setProperty('--angle', `${angle}deg`);
+            // 【調整角度位置】計算每個標籤的位置，避免視覺錯位
+            const indexOffset = (i - 1 + options.length) % options.length;  // 進行位置偏移
+            const angle = indexOffset * angleStep + angleStep / 2 - 22.5 + item.offset; // 計算每個標籤的角度
+            label.style.setProperty('--angle', `${angle}deg`);  // 使用自訂的 CSS 變數來設置角度
 
-            label.textContent = item.text;
-            labelsContainer.appendChild(label);
+            // 【左右 + 上下翻轉】針對特定的獎項進行翻轉處理（索引 4、5、6）
+            if (i === 4 || i === 5 || i === 6) {
+                const span = document.createElement('span');     // 創建一個包住文字的 span 元素
+                span.textContent = item.text;                    // 設定 span 文字為該獎項的名稱
+                span.style.display = 'inline-block';             // 設定 span 為區塊顯示
+                span.style.transform = 'scale(-1, -1)';          // 左右 + 上下翻轉
+                label.appendChild(span);                         // 將翻轉後的 span 加到標籤內
+            } else {
+                label.textContent = item.text;  // 其餘標籤正常顯示文字
+            }
+
+            labelsContainer.appendChild(label);  // 將標籤加入容器中
         });
     }
 
-    // 【載入後初始化】
+    // 【載入後初始化】當頁面完成載入後執行初始化
     window.addEventListener('load', initLabels);
 
-    // 【按鈕點擊 - 開始旋轉】
+    // 【旋轉按鈕點擊事件】當用戶點擊按鈕時開始旋轉輪盤
     spinBtn.addEventListener('click', () => {
         if (hasSpun) {
-            alert("本輪已轉完，請重新整理頁面再試一次！");
+            alert("本輪已轉完，請重新整理頁面再試一次！");  // 若已經轉過，顯示提示並禁止重轉
             return;
         }
 
-        hasSpun = true;  // 標記為已轉
-
-        const randomDegree = 360 * 5 + Math.floor(Math.random() * 360);  // 隨機旋轉
-        pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`;  // 指針旋轉
+        hasSpun = true;  // 標記已經轉過輪盤
+        const randomDegree = 360 * 5 + Math.floor(Math.random() * 360);  // 計算隨機旋轉角度（五圈 + 隨機角度）
+        pointer.style.transform = `translate(-50%, -100%) rotate(${randomDegree}deg)`;  // 設定指針旋轉的角度
     });
 </script>
+
+
+
+
 
 </body>
 
