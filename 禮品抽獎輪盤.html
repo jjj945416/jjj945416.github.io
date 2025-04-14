@@ -252,7 +252,7 @@ window.addEventListener('load', initLabels); /* 頁面加載時初始化獎項�
 
 // 【新增：旋轉次數限制功能】
 let spinCount = localStorage.getItem('spinCount') ? parseInt(localStorage.getItem('spinCount')) : 0; // 讀取存儲的旋轉次數
-const maxSpins = 1000; // 最多可旋轉次數
+const maxSpins = 3000; // 最多可旋轉次數
 
 // 建立顯示剩餘次數的元素
 const spinCountDisplay = document.createElement('div'); // 建立顯示區塊
