@@ -48,16 +48,16 @@
             border-radius: 50%;
             /* 使輪盤圓形 */
             background: conic-gradient(from -18deg,
-    #e74c3c 0deg 37deg,         /* 紅色 - 對應綠色 */
-    #16a085 37deg 74deg,        /* 藍綠色 - 對應紅色 */
-    #3498db 74deg 111deg,       /* 藍色 - 對應橙色 */
-    #e67e22 111deg 148deg,      /* 橙色 - 對應藍色 */
-    #9b59b6 148deg 175deg,      /* 紫色 - 對應黃色 */
-    #f1c40f 175deg 212deg,      /* 黃色 - 對應紫色 */
-    #2ecc71 212deg 249deg,      /* 草綠 - 對應紅色 */
-    #d35400 249deg 286deg,      /* 橙紅色 - 對應藍綠色 */
-    #34495e 286deg 323deg,      /* 深藍灰 - 對應明亮橙色 */
-    #f39c12 323deg 360deg       /* 橙黃色 - 對應藍色 */
+#c0392b 0deg 37deg,         /* 深紅 - 對應薄荷綠 */
+    #1abc9c 37deg 74deg,        /* 薄荷綠 - 對應深紅 */
+    #2980b9 74deg 111deg,       /* 深藍 - 對應橘色 */
+    #e67e22 111deg 148deg,      /* 橘色 - 對應深藍 */
+    #8e44ad 148deg 175deg,      /* 紫羅蘭 - 對應金黃 */
+    #f39c12 175deg 212deg,      /* 金黃 - 對應紫羅蘭 */
+    #27ae60 212deg 249deg,      /* 森林綠 - 對應珊瑚紅 */
+    #e74c3c 249deg 286deg,      /* 珊瑚紅 - 對應森林綠 */
+    #2c3e50 286deg 323deg,      /* 深海藍 - 對應亮橙 */
+    #f5b041 323deg 360deg       /* 亮橙 - 對應深海藍 */
 ),
 radial-gradient(circle at center, rgba(255,255,255,0.3), rgba(255,255,255,0) 70%);
 background-blend-mode: overlay;
@@ -286,7 +286,7 @@ background-blend-mode: overlay;
                     label.style.transform = `rotate(${angle}deg) translate(0, 0px)`; /* 設定旋轉與偏移 */
                     const span = document.createElement('span'); /* 創建容器 span 元素 */
                     span.style.display = 'inline-block'; /* 設定為區塊元素 */
-                    span.style.transform = 'rotate(283deg)'; /* 整段文字右轉 90 度 */
+                    span.style.transform = 'rotate(283deg)'; /* 整段文字右轉 283 度 */
 
                     const chars = item.text.split(''); /* 把文字分成每個字 */
                     chars.forEach(char => {
