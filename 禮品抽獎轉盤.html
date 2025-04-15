@@ -48,16 +48,19 @@
             border-radius: 50%;
             /* 使輪盤圓形 */
             background: conic-gradient(from -18deg,
-                    #e74c3c 0deg 36deg,
-                    #3498db 36deg 72deg,
-                    #2ecc71 72deg 108deg,
-                    #f39c12 108deg 144deg,
-                    #9b59b6 144deg 180deg,
-                    #1abc9c 180deg 216deg,
-                    #d35400 216deg 252deg,
-                    #34495e 252deg 288deg,
-                    #e67e22 288deg 324deg,
-                    #16a085 324deg 360deg);
+    #e74c3c 0deg 37deg,         /* 紅色 - 對應綠色 */
+    #16a085 37deg 74deg,        /* 藍綠色 - 對應紅色 */
+    #3498db 74deg 111deg,       /* 藍色 - 對應橙色 */
+    #e67e22 111deg 148deg,      /* 橙色 - 對應藍色 */
+    #9b59b6 148deg 175deg,      /* 紫色 - 對應黃色 */
+    #f1c40f 175deg 212deg,      /* 黃色 - 對應紫色 */
+    #2ecc71 212deg 249deg,      /* 草綠 - 對應紅色 */
+    #d35400 249deg 286deg,      /* 橙紅色 - 對應藍綠色 */
+    #34495e 286deg 323deg,      /* 深藍灰 - 對應明亮橙色 */
+    #f39c12 323deg 360deg       /* 橙黃色 - 對應藍色 */
+),
+radial-gradient(circle at center, rgba(255,255,255,0.3), rgba(255,255,255,0) 70%);
+background-blend-mode: overlay;
             /* 設定圓形輪盤的色帶 */
             -webkit-mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px);
             /* 使輪盤中心區域透明 */
@@ -250,15 +253,15 @@
         // 【獎項設定】共10格，每格36度
         const options = [
             { text: "住宿優惠券", offset: 13 },
-            { text: "擊球優惠劵", offset: 5 },
+            { text: "擊球優惠劵", offset: 1 },
+            { text: "餐飲折扣劵", offset: 12 },
+            { text: "擊球優惠劵", offset: 12 },
+            { text: "餐飲折扣劵", offset: 12 },
+            { text: "擊球優惠劵", offset: 12 },
             { text: "餐飲折扣劵", offset: 13 },
             { text: "擊球優惠劵", offset: 13 },
-            { text: "餐飲折扣劵", offset: 13 },
-            { text: "擊球優惠劵", offset: 13 },
-            { text: "餐飲折扣劵", offset: 13 },
-            { text: "擊球優惠劵", offset: 13 },
-            { text: "餐飲折扣劵", offset: 13 },
-            { text: "餐飲折扣劵", offset: 13 }
+            { text: "餐飲折扣劵", offset: 15 },
+            { text: "餐飲折扣劵", offset: 17 }
         ];
 
         // 【DOM元素取得】  
