@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>禮品抽獎輪盤</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>禮品抽獎輪盤</h1>
+    <!-- 修改管理按鈕為可觸發密碼驗證 -->
+    <a href="javascript:void(0);" id="manage-button" class="manage-button">管理</a> <!-- 點擊管理按鈕會出現密碼輸入框 -->
+
+    <!-- 【輪盤主要結構】 -->
+    <div class="wheel-container"> <!-- 輪盤外層容器 -->
+        <div class="wheel" id="wheel"> <!-- 輪盤本體 -->
+            <div class="labels" id="labels"></div> <!-- 放置獎項文字的區域 -->
+        </div>
+        <div class="pointer-container"> <!-- 指針容器 -->
+            <div class="pointer" id="pointer"></div> <!-- 指針圖形 -->
+            <div class="center-circle"></div> <!-- 輪盤中心圓點 -->
+        </div>
+    </div>
+
+    <!-- 密碼驗證模態視窗 -->
+    <div id="password-modal" class="modal-overlay"> <!-- 密碼輸入模態視窗外層 -->
+        <div class="modal-content"> <!-- 模態視窗內層內容 -->
+            <label for="password-input">請輸入密碼：</label> <!-- 密碼輸入標籤 -->
+            <input type="password" id="password-input" placeholder="輸入密碼"> <!-- 密碼輸入框 -->
+            <div class="modal-buttons"> <!-- 模態視窗按鈕區 -->
+                <button id="confirm-password">確認</button> <!-- 確認密碼按鈕 -->
+                <button id="cancel-password">取消</button> <!-- 取消並關閉模態視窗 -->
+            </div>
+        </div>
+    </div>
+    <!-- 【控制按鈕】 -->
+    <button id="spin-btn">開始旋轉</button> <!-- 開始旋轉按鈕 -->
+    <p>剩餘次數：<span id="remaining-count"></span></p> <!-- 剩餘次數顯示區域 -->
+    <script src="script.js"></script>
+</body>
+
+</html>

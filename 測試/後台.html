@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8"> <!-- 設定網頁字元編碼為 UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 響應式設計設定 -->
+  <title>後台管理</title> <!-- 設定網頁標題 -->
+  <link rel="stylesheet" href="後台.css"> <!-- 引入 CSS 樣式表 -->
+</head>
+
+<body>
+  <div class="container"> <!-- 主要容器，內容區域置中 -->
+
+    <!-- 🔵 區塊 1：輸入每日來客數 -->
+    <div class="card">
+      <h2>每日來客數紀錄</h2> <!-- 區塊標題 -->
+      <label for="visit-date">選擇日期</label> <!-- 日期欄標籤 -->
+      <input type="date" id="visit-date"> <!-- 日期輸入欄位 -->
+
+      <label for="visit-count">來客人數</label> <!-- 來客數標籤 -->
+      <input type="number" id="visit-count" min="0"> <!-- 數字輸入欄位 -->
+
+      <button onclick="saveGuestCount()">儲存來客數</button> <!-- 儲存按鈕 -->
+
+      <div class="guest-log" id="guest-log">尚無記錄</div> <!-- 顯示來客數紀錄 -->
+    </div>
+
+    <!-- 🟢 區塊 2：顯示各區間中獎次數與重設 -->
+    <div class="card">
+      <h2>中獎次數統計</h2> <!-- 標題 -->
+
+      <div id="win-stats">載入中...</div> <!-- 顯示中獎次數的區域 -->
+
+      <button onclick="confirmResetWinners()">重設中獎次數</button> <!-- 重設按鈕 -->
+    </div>
+
+    <!-- 🔴 區塊 3：重設轉動次數 -->
+    <div class="card">
+      <h2>轉動次數設定</h2> <!-- 區塊標題 -->
+      <!-- HTML：重設按鈕 -->
+      <button id="reset-spins-btn">重設前台旋轉次數</button>
+      
+    </div>
+  </div>
+
+  <script src="後台.js"></script> <!-- 引入 JavaScript 檔案 -->
+</body>
+
+</html>

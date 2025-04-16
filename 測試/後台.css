@@ -1,0 +1,73 @@
+body {
+    margin: 0; /* 移除預設外距 */
+    padding: 0; /* 移除預設內距 */
+    font-family: 'Segoe UI', sans-serif; /* 設定整體字型 */
+    background-color: #f0f8ff; /* 背景色為淡藍色 */
+  }
+
+  .container {
+    display: flex; /* 使用 Flex 排版 */
+    flex-direction: column; /* 垂直排列 */
+    align-items: center; /* 置中對齊 */
+    justify-content: center; /* 垂直置中 */
+    min-height: 100vh; /* 最小高度為整個畫面高度 */
+    gap: 20px; /* 區塊間距 */
+  }
+
+  .card {
+    background-color: #ffffff; /* 白色卡片背景 */
+    border-radius: 12px; /* 圓角邊框 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+    padding: 20px; /* 內距 */
+    width: 33%; /* 寬度為畫面三分之一 */
+    min-width: 300px; /* 最小寬度限制 */
+    box-sizing: border-box; /* 內距不超出寬度 */
+  }
+
+  h2 {
+    color: #333; /* 標題文字顏色 */
+  }
+
+  label {
+    display: block; /* 標籤獨立成一行 */
+    margin: 10px 0 5px; /* 上下邊距 */
+    font-weight: bold; /* 粗體字 */
+  }
+
+  input[type="number"],
+  input[type="date"] {
+    width: 100%; /* 滿版寬度 */
+    padding: 8px; /* 內距 */
+    border-radius: 6px; /* 圓角邊框 */
+    border: 1px solid #ccc; /* 淺灰色邊框 */
+  }
+
+  button {
+    margin-top: 10px; /* 與上方間距 */
+    padding: 10px 15px; /* 內距 */
+    border: none; /* 移除邊框 */
+    border-radius: 8px; /* 圓角按鈕 */
+    background-color: #4CAF50; /* 綠色背景 */
+    color: white; /* 白色文字 */
+    cursor: pointer; /* 滑鼠游標為指標 */
+    transition: background-color 0.3s; /* 滑動變色效果 */
+  }
+
+  button:hover {
+    background-color: #45a049; /* 滑過時變色 */
+  }
+
+  .button-group {
+    display: flex; /* 水平排列 */
+    justify-content: space-between; /* 左右間距 */
+    gap: 20px; /* 按鈕間距 */
+    margin-top: 10px; /* 與上方間距 */
+  }
+
+  .guest-log {
+    margin-top: 10px; /* 與上方區塊間距 */
+    background-color: #f9f9f9; /* 淺灰底色 */
+    padding: 10px; /* 內距 */
+    border-radius: 8px; /* 圓角 */
+    font-size: 14px; /* 字體大小 */
+  }

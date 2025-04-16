@@ -1,0 +1,314 @@
+/* 【整體頁面樣式】 */
+body {
+    background: #f0f0f0;
+    /* 設定背景顏色 */
+    font-family: Arial, sans-serif;
+    /* 設定字型 */
+    display: flex;
+    /* 使用flexbox排列內容 */
+    justify-content: center;
+    /* 使內容水平置中 */
+    align-items: center;
+    /* 使內容垂直置中 */
+    height: 100vh;
+    /* 使頁面高度為視窗高度 */
+    flex-direction: column;
+    /* 垂直排列元素 */
+    margin: 0;
+    /* 移除頁面默認邊距 */
+    padding: 20px;
+    /* 設定內邊距 */
+}
+
+/* 【輪盤容器樣式】 */
+.wheel-container {
+    position: relative;
+    /* 設置相對定位，方便放置指針等元素 */
+    width: 500px;
+    /* 設定輪盤寬度 */
+    height: 500px;
+    /* 設定輪盤高度 */
+    margin-bottom: 30px;
+    /* 設定輪盤底部邊距 */
+}
+
+/* 【輪盤主體樣式】 */
+.wheel {
+    width: 100%;
+    /* 設定寬度為父容器的100% */
+    height: 100%;
+    /* 設定高度為父容器的100% */
+    border-radius: 50%;
+    /* 使輪盤圓形 */
+    background: conic-gradient(from -18deg,
+            #c0392b 0deg 37deg,
+            /* 深紅 - 對應薄荷綠 */
+            #1abc9c 37deg 74deg,
+            /* 薄荷綠 - 對應深紅 */
+            #2980b9 74deg 111deg,
+            /* 深藍 - 對應橘色 */
+            #e67e22 111deg 148deg,
+            /* 橘色 - 對應深藍 */
+            #8e44ad 148deg 175deg,
+            /* 紫羅蘭 - 對應金黃 */
+            #f39c12 175deg 212deg,
+            /* 金黃 - 對應紫羅蘭 */
+            #27ae60 212deg 249deg,
+            /* 森林綠 - 對應珊瑚紅 */
+            #e74c3c 249deg 286deg,
+            /* 珊瑚紅 - 對應森林綠 */
+            #2c3e50 286deg 323deg,
+            /* 深海藍 - 對應亮橙 */
+            #f5b041 323deg 360deg
+            /* 亮橙 - 對應深海藍 */
+        ),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 70%);
+    background-blend-mode: overlay;
+    /* 設定圓形輪盤的色帶 */
+    -webkit-mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px);
+    /* 使輪盤中心區域透明 */
+    mask: radial-gradient(circle 60px at center, transparent 0, transparent 60px, black 61px);
+    /* 使輪盤中心區域透明 */
+    position: relative;
+    /* 設置為相對定位 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* 添加陰影效果 */
+}
+
+/* 【獎項標籤容器】 */
+.labels {
+    position: absolute;
+    /* 絕對定位，讓標籤覆蓋在輪盤上 */
+    width: 100%;
+    /* 設定寬度為100% */
+    height: 100%;
+    /* 設定高度為100% */
+    top: 0;
+    /* 定位於容器頂部 */
+    left: 0;
+    /* 定位於容器左側 */
+    pointer-events: none;
+    /* 禁止標籤與滑鼠交互 */
+}
+
+/* 【單個獎項標籤樣式】 */
+.label {
+    position: absolute;
+    /* 絕對定位 */
+    width: 200px;
+    /* 設定標籤寬度 */
+    top: 50%;
+    /* 垂直置中標籤 */
+    left: 50%;
+    /* 水平置中標籤 */
+    transform-origin: 0% 0%;
+    /* 設定旋轉中心 */
+    font-size: 18px;
+    /* 設定字型大小 */
+    color: white;
+    /* 設定字體顏色為白色 */
+    font-weight: bold;
+    /* 設定字型為加粗 */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    /* 設定文字陰影 */
+    text-align: right;
+    /* 文字右對齊 */
+    padding-right: 10px;
+    /* 文字右邊距 */
+    transform: rotate(var(--angle)) translateX(30px);
+    /* 根據計算的角度旋轉標籤並移動 */
+}
+
+/* 【指針容器樣式】 */
+.pointer-container {
+    position: absolute;
+    /* 絕對定位 */
+    width: 100%;
+    /* 設定寬度為100% */
+    height: 100%;
+    /* 設定高度為100% */
+    top: 0;
+    /* 定位於容器頂部 */
+    left: 0;
+    /* 定位於容器左側 */
+    pointer-events: none;
+    /* 禁止指針與滑鼠交互 */
+    z-index: 10;
+    /* 設定指針的層級 */
+}
+
+/* 【劍形指針樣式】 */
+#pointer {
+    position: absolute;
+    /* 絕對定位 */
+    width: 40px;
+    /* 設定指針寬度 */
+    height: 180px;
+    /* 設定指針高度 */
+    background-color: #000;
+    /* 設定指針顏色為黑色 */
+    top: 50%;
+    /* 垂直置中指針 */
+    left: 50%;
+    /* 水平置中指針 */
+    transform: translate(-50%, -100%) rotate(0deg);
+    /* 初始位置和角度 */
+    transform-origin: bottom center;
+    /* 設定旋轉中心在底部中間 */
+    z-index: 11;
+    /* 設定指針的層級 */
+    clip-path: polygon(50% 0%, 60% 10%, 55% 85%, 45% 85%, 40% 10%);
+    /* 設定指針形狀 */
+    transition: transform 4s cubic-bezier(0.2, 0.6, 0.2, 1);
+    /* 設定旋轉動畫效果 */
+}
+
+/* 【中心圓點樣式】 */
+.center-circle {
+    position: absolute;
+    /* 絕對定位 */
+    width: 30px;
+    /* 設定圓點大小 */
+    height: 30px;
+    /* 設定圓點大小 */
+    background: rgb(0, 0, 0);
+    /* 設定圓點顏色 */
+    border-radius: 50%;
+    /* 使圓點圓形 */
+    top: 50%;
+    /* 垂直置中 */
+    left: 50%;
+    /* 水平置中 */
+    transform: translate(-50%, -50%);
+    /* 讓圓點置中 */
+    border: 3px solid #000000;
+    /* 設定圓點邊框 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    /* 添加圓點陰影 */
+    z-index: 15;
+    /* 設定圓點層級 */
+}
+
+/* 【旋轉按鈕樣式】 */
+button {
+    margin-top: 20px;
+    /* 設定按鈕上邊距 */
+    padding: 15px 40px;
+    /* 設定按鈕內邊距 */
+    font-size: 18px;
+    /* 設定字型大小 */
+    border-radius: 30px;
+    /* 設定圓角 */
+    border: none;
+    /* 移除邊框 */
+    background: #3498db;
+    /* 設定背景顏色 */
+    color: white;
+    /* 設定字體顏色為白色 */
+    cursor: pointer;
+    /* 設定游標樣式 */
+    transition: all 0.3s;
+    /* 設定過渡動畫 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* 設定陰影 */
+}
+
+button:hover {
+    background: #2980b9;
+    /* 設定鼠標懸停時的背景顏色 */
+    transform: translateY(-2px);
+    /* 設定懸停時按鈕上升效果 */
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
+    /* 設定懸停時的陰影效果 */
+}
+
+button:disabled {
+    background: #95a5a6;
+    /* 禁用按鈕的背景顏色 */
+    cursor: not-allowed;
+    /* 禁用狀態的游標 */
+    transform: none;
+    /* 禁用狀態無變化 */
+    box-shadow: none;
+    /* 禁用狀態去除陰影 */
+}
+
+/* 設定右上角管理按鈕的樣式 */
+.manage-button {
+    position: fixed;
+    /* 固定位置在畫面上不會被捲動影響 */
+    top: 20px;
+    /* 距離畫面頂部 20px */
+    right: 20px;
+    /* 距離畫面右側 20px */
+    background-color: #007bff;
+    /* 背景藍色 */
+    color: white;
+    /* 文字白色 */
+    padding: 10px 16px;
+    /* 內距讓按鈕大小適中 */
+    border-radius: 8px;
+    /* 圓角按鈕 */
+    text-decoration: none;
+    /* 取消底線 */
+    font-weight: bold;
+    /* 字體加粗 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* 輕微陰影 */
+    transition: background-color 0.2s;
+    /* 滑鼠懸停時背景色平滑過渡 */
+}
+
+/* 當滑鼠移過管理按鈕時改變顏色 */
+.manage-button:hover {
+    background-color: #0056b3;
+    /* 深一點的藍色 */
+}
+
+/* 密碼驗證模態視窗的整體遮罩背景 */
+#password-modal {
+    position: fixed;
+    /* 固定定位，覆蓋整個畫面 */
+    top: 0;
+    /* 從畫面最上方開始 */
+    left: 0;
+    /* 從畫面最左側開始 */
+    width: 100%;
+    /* 寬度佔滿整個視窗 */
+    height: 100%;
+    /* 高度佔滿整個視窗 */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 黑色半透明遮罩背景 */
+    display: none;
+    /* 預設隱藏模態視窗 */
+    justify-content: center;
+    /* 水平置中模態視窗內容 */
+    align-items: center;
+    /* 垂直置中模態視窗內容 */
+    z-index: 999;
+    /* 確保顯示在其他內容之上 */
+}
+
+/* 模態視窗內的主要內容樣式 */
+.modal-content {
+    background-color: #fff;
+    /* 白色背景 */
+    padding: 20px 30px;
+    /* 上下20px、左右30px的內距 */
+    border-radius: 12px;
+    /* 圓角邊框 */
+    text-align: center;
+    /* 文字置中 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    /* 添加柔和的陰影效果 */
+}
+
+/* 按鈕排版 */
+.modal-buttons {
+    margin-top: 10px;
+}
+
+.modal-buttons button {
+    margin: 0 5px;
+    padding: 6px 16px;
+}
