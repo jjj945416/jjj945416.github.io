@@ -88,7 +88,12 @@ window.addEventListener('load', () => {
 function updateRemainingCount() {
     remainingCountElement.textContent = `${remainingSpins}`; // 顯示剩餘次數
 }
-
+// 監聽 'syncData' 事件並更新前台資料
+window.addEventListener('syncData', () => {     // 當事件觸發時執行
+    const remainingSpins = localStorage.getItem('remainingSpins');  // 取得剩餘次數
+    // 更新前台顯示的旋轉次數  
+    document.getElementById('remaining-spins').textContent = remainingSpins || 2000;    // 如果沒有則顯示預設值
+});
 // 【旋轉事件】
 spinBtn.addEventListener('click', () => {
     if (remainingSpins <= 0) {
