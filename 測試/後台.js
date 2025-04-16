@@ -59,7 +59,7 @@ const PASSWORD = "nggchr"; // ✅ 設定密碼
       });
     }
 
-    // 🔁 重設中獎次數確認
+       // 🔁 重設中獎次數確認
     function confirmResetWinners() {
       const pw = prompt("請輸入密碼以重設中獎次數："); // 提示輸入密碼
       if (pw === PASSWORD) {
@@ -78,6 +78,8 @@ document.getElementById('reset-spins-btn').addEventListener('click', () => { // 
         alert("前台旋轉次數已成功重設！");
     } else {
         alert("密碼錯誤，取消操作！");
+    }
+});
     // 同步前台頁面資料
 function syncFrontend() {
     const event = new CustomEvent("syncData"); // 觸發自定義事件
