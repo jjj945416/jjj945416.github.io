@@ -70,17 +70,14 @@ const PASSWORD = "nggchr"; // ✅ 設定密碼
         alert("密碼錯誤，取消操作");
       }
     }
-
-    // 🔁 重設轉動次數確認
-    function confirmResetSpins() {
-      const pw = prompt("請輸入密碼以重設轉動次數："); // 提示輸入密碼
-      if (pw === PASSWORD) {
-        localStorage.removeItem("spinCount"); // 清除次數
-        alert("轉動次數已重設");
-      } else {
-        alert("密碼錯誤，取消操作");
-      }
-    }
+// JavaScript：重設 localStorage 中的 remainingSpins 值（加上密碼驗證）
+document.getElementById('reset-spins-btn').addEventListener('click', () => { // 取得按鈕
+    const pw = prompt("請輸入密碼以重設前台旋轉次數："); // 顯示密碼輸入提示
+    if (pw === PASSWORD) { // 驗證密碼
+        localStorage.setItem('remainingSpins', 2000); // 設定為初始值 2000
+        alert("前台旋轉次數已成功重設！");
+    } else {
+        alert("密碼錯誤，取消操作！");
     // 同步前台頁面資料
 function syncFrontend() {
     const event = new CustomEvent("syncData"); // 觸發自定義事件
