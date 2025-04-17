@@ -210,3 +210,22 @@ function verifyPassword() {
         passwordInput.value = ''; // 清空密碼輸入框
     }
 }
+// 🛠️ 監聽後台頁面發送的 resetSpins 事件
+window.addEventListener('resetSpins', () => {
+    updateRemainingSpins();  // 重新從 localStorage 取得並更新剩餘次數
+    hasSpun = false;  // 可選：重設旋轉狀態，防止使用者誤點擊
+});
+
+// 🛠️ 更新剩餘次數顯示的函式
+function updateRemainingSpins() {
+    remainingSpins = parseInt(localStorage.getItem('remainingSpins')) || 2000;
+    updateRemainingCount();  // 更新顯示的剩餘次數
+}
+
+// 🛠️ 更新畫面顯示的剩餘次數
+function updateRemainingCount() {
+    const remainingCountElement = document.getElementById('remaining-count');
+    if (remainingCountElement) {
+        remainingCountElement.textContent = remainingSpins;  // 顯示剩餘次數
+    }
+}
