@@ -2,8 +2,8 @@ const PASSWORD = "nggchr"; // ✅ 設定密碼
 
 // 🟨 儲存來客數功能
 function saveGuestCount() {
-  const date = document.getElementById("visit-date").value; // 取得日期
-  const count = document.getElementById("visit-count").value; // 取得人數
+  const date = document.getElementById("visit-date").value;
+  const count = document.getElementById("visit-count").value;
   if (!date || count === "") {
     alert("請輸入日期與人數");
     return;
@@ -73,60 +73,37 @@ function loadRemainingSpins() {
 
 // 🔁 重設剩餘旋轉次數
 function resetSpins() {
-  localStorage.setItem('remainingSpins', '2000'); // 設定為初始值
-  window.dispatchEvent(new Event('resetSpins')); // 觸發事件讓前台也能更新
-  alert("旋轉次數已成功重設！"); // 顯示提示
+  localStorage.setItem('remainingSpins', '2000'); // 設為預設值
+  loadRemainingSpins(); // ✅ 立即更新後台畫面
+  alert("旋轉次數已成功重設！");
 }
 
 // 🧹 重設中獎紀錄
 function resetWinStats() {
   localStorage.setItem('winStats', JSON.stringify(Array(10).fill(0))); // 重設為全 0
-  loadWinStats(); // 更新畫面
-  alert("中獎紀錄已成功重設！"); // 顯示提示
+  loadWinStats(); // ✅ 立即更新畫面
+  alert("中獎紀錄已成功重設！");
 }
 
-// 📡 監聽前台更新資料事件
-window.addEventListener('resetSpins', function () {
-  const spins = localStorage.getItem("remainingSpins");
-  const display = document.getElementById("remaining-count");
-  if (display) {
-    display.textContent = spins;
-  }
-});
-
-// 🔄 監聽 localStorage 改變（更新後台顯示）
-window.addEventListener('storage', (event) => {
-  if (event.key === 'remainingSpins') {
-    const updatedRemainingSpins = localStorage.getItem('remainingSpins');
-    document.getElementById('remaining-count-backend').textContent = updatedRemainingSpins;
-  }
-});
-
-// ✅ 初始化畫面與按鈕監聽
+// ✅ 初始化頁面與按鈕監聽
 function initializePage() {
-  loadGuestLog();
-  loadWinStats();
-  loadRemainingSpins();
+  loadGuestLog();        // 載入來客數
+  loadWinStats();        // 載入中獎統計
+  loadRemainingSpins();  // 載入剩餘次數
 
-  // 監聽重設旋轉次數按鈕
-  const resetSpinsBtn = document.getElementById("reset-spins-btn");
-  if (resetSpinsBtn) {
-    resetSpinsBtn.addEventListener("click", () => {
-      if (checkPassword()) {
-        resetSpins();
-      }
-    });
-  }
+  // 🔐 綁定重設旋轉次數按鈕
+  document.getElementById("reset-spins-btn").addEventListener("click", () => {
+    if (checkPassword()) {
+      resetSpins();
+    }
+  });
 
-  // 監聽重設中獎紀錄按鈕
-  const resetWinStatsBtn = document.getElementById("reset-win-stats-btn");
-  if (resetWinStatsBtn) {
-    resetWinStatsBtn.addEventListener("click", () => {
-      if (checkPassword()) {
-        resetWinStats();
-      }
-    });
-  }
+  // 🔐 綁定重設中獎紀錄按鈕
+  document.getElementById("reset-win-stats-btn").addEventListener("click", () => {
+    if (checkPassword()) {
+      resetWinStats();
+    }
+  });
 }
 
 // 💾 儲存與讀取 localStorage 的工具
@@ -149,5 +126,5 @@ function checkPassword() {
   }
 }
 
-// 🚀 頁面加載時初始化
+// 🚀 頁面載入後自動初始化
 window.onload = initializePage;
