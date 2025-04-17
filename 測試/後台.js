@@ -74,7 +74,7 @@ function loadRemainingSpins() {
 // 🔁 重設剩餘旋轉次數
 function resetSpins() {
   localStorage.setItem('remainingSpins', '2000'); // 設為預設值
-  loadRemainingSpins(); // ✅ 立即更新後台畫面
+  loadRemainingSpins(); // ✅ 立即更新畫面
   alert("旋轉次數已成功重設！");
 }
 
@@ -94,14 +94,14 @@ function initializePage() {
   // 🔐 綁定重設旋轉次數按鈕
   document.getElementById("reset-spins-btn").addEventListener("click", () => {
     if (checkPassword()) {
-      resetSpins();
+      resetSpins(); // ✅ 會立即更新
     }
   });
 
   // 🔐 綁定重設中獎紀錄按鈕
   document.getElementById("reset-win-stats-btn").addEventListener("click", () => {
     if (checkPassword()) {
-      resetWinStats();
+      resetWinStats(); // ✅ 會立即更新
     }
   });
 }
