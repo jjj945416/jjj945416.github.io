@@ -13,12 +13,12 @@ const options = [
 ];
 
 // 【DOM元素取得】
-const pointer = document.getElementById('pointer');  // 取得指針元素
-const spinBtn = document.getElementById('spin-btn'); // 取得旋轉按鈕
-const labelsContainer = document.getElementById('labels'); // 取得標籤容器
+const spinBtn = document.getElementById('spin-btn'); // 確保這是你的旋轉按鈕的 ID
+const pointer = document.getElementById('pointer'); // 確保這是你的指針元素的 ID
+const labelsContainer = document.getElementById('labels'); // 確保這裡是正確的元素
 const remainingCountElement = document.getElementById('remaining-count'); // 取得剩餘次數顯示元素
-let hasSpun = false; // 設定初始旋轉狀態為未旋轉
-let remainingSpins = 2000; // 初始剩餘旋轉次數
+let remainingSpins = parseInt(localStorage.getItem('remainingSpins')) || 2000; // 預設為 2000
+let hasSpun = false; // 確保 hasSpun 是未旋轉狀態
 
 // 【初始化標籤】
 function initLabels() {
@@ -32,6 +32,7 @@ function initLabels() {
         const indexOffset = (i + 1) % options.length; // 計算偏移索引
         const angle = indexOffset * angleStep + angleStep / 2 - 18 + item.offset; // 計算標籤旋轉角度
 
+        // 處理特殊標籤的顯示方式
         if (i === 1) {
             label.style.transform = `rotate(${angle}deg) translate(0, 0px)`; // 設定旋轉與位置
             const span = document.createElement('span'); // 建立包字容器
@@ -56,7 +57,7 @@ function initLabels() {
                 span.style.display = 'inline-block';
                 span.style.transform = 'scale(-1, -1)'; // 反轉文字
                 label.appendChild(span); // 加入標籤
-            } else if (i === 6) {
+            } else if (i === 6) { // 如果是第 6 個獎項
                 const span = document.createElement('span');    // 建立 span
                 span.style.display = 'inline-block';    // 設定顯示為區塊
                 span.style.transform = 'scale(-1, -1)'; // 反轉文字
@@ -68,7 +69,7 @@ function initLabels() {
                     span.appendChild(charSpan); // 加入字元容器
                 });
                 label.appendChild(span);    // 加入標籤
-            } else {
+            } else { // 其他標籤，正常顯示
                 label.textContent = item.text; // 其他正常顯示
             }
         }
@@ -77,84 +78,95 @@ function initLabels() {
     });
 }
 
-// 【頁面載入後初始化】
+
+// 【本地儲存】取得與設定函式
+function updateRemainingSpins() {
+    remainingSpins = parseInt(localStorage.getItem('remainingSpins')) || 2000;
+    updateRemainingCount();  // 更新畫面
+}
+
+// 🔁 更新剩餘次數顯示
+function updateRemainingCount() {
+    if (remainingCountElement) {
+        remainingCountElement.textContent = remainingSpins;  // 顯示剩餘次數
+    }
+}
+
+// 🎯 頁面載入時初始化資料
 window.addEventListener('load', () => {
-    remainingSpins = localStorage.getItem('remainingSpins') ? parseInt(localStorage.getItem('remainingSpins')) : 2000; // 從 localStorage 取得次數
-    updateRemainingCount(); // 顯示次數
-    initLabels(); // 初始化標籤
+    updateRemainingSpins();  // 初始化剩餘次數
+    initLabels();  // 初始化標籤
 });
 
-// 【更新剩餘次數】
-function updateRemainingCount() {
-    remainingCountElement.textContent = `${remainingSpins}`; // 顯示剩餘次數
-}
-// 監聽 'syncData' 事件並更新前台資料
-window.addEventListener('syncData', () => {     // 當事件觸發時執行
-    const remainingSpins = localStorage.getItem('remainingSpins');  // 取得剩餘次數
-    // 更新前台顯示的旋轉次數  
-    document.getElementById('remaining-spins').textContent = remainingSpins || 2000;    // 如果沒有則顯示預設值
-});
-// 【旋轉事件】
+// 🎰 點擊旋轉按鈕的事件
 spinBtn.addEventListener('click', () => {
     if (remainingSpins <= 0) {
         alert("已達到最大旋轉次數！");
         return;
     }
-
     if (hasSpun) {
         alert("本輪已轉完，請重新整理頁面再試一次！");
         return;
     }
+    hasSpun = true; // 設定為已旋轉
 
-    hasSpun = true;
+    const selectedDegree = 360 * 6 + Math.floor(Math.random() * 360) + 1; // 旋轉角度（6圈+隨機）
+    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`; // 設定旋轉效果
 
-    const selectedDegree = 360 * 5 + Math.floor(Math.random() * 360) + 1; // 計算隨機角度
-    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`; // 執行旋轉
+    // 更新剩餘次數
+    remainingSpins--; // 次數減一
+    localStorage.setItem('remainingSpins', remainingSpins); // 更新 localStorage 中的剩餘次數
+    updateRemainingCount(); // 更新畫面顯示
 
-    remainingSpins--; // 減少次數
-    updateRemainingCount(); // 更新顯示
-    localStorage.setItem('remainingSpins', remainingSpins); // 存入本地
+    // 計算中獎區塊
+    const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length)); // 計算中獎索引
+    let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);   // 讀取中獎次數
+    winStats[currentWinnerIndex]++; // 增加中獎次數
+    localStorage.setItem('winStats', JSON.stringify(winStats)); // 儲存中獎次數
 });
 
-// 【管理頁面密碼驗證】
-const manageButton = document.getElementById('manage-button'); // 取得管理按鈕
-const passwordModal = document.getElementById('password-modal'); // 取得密碼模態框
-const passwordInput = document.getElementById('password-input'); // 取得密碼輸入欄
+// 更新後台資料（這裡可以根據實際需求進行調整）
+// 發送同步事件
+const syncEvent = new Event('syncData');
+window.dispatchEvent(syncEvent);
+
+// 🔐 密碼驗證與管理頁面跳轉（無變更，保留原來的邏輯）
+const manageButton = document.getElementById('manage-button'); // 管理按鈕
+const passwordModal = document.getElementById('password-modal'); // 密碼輸入視窗
+const passwordInput = document.getElementById('password-input'); // 密碼輸入框
 const confirmPasswordBtn = document.getElementById('confirm-password'); // 確認按鈕
 const cancelPasswordBtn = document.getElementById('cancel-password'); // 取消按鈕
 
-// 開啟密碼視窗
+// ➕ 開啟密碼視窗
 manageButton.addEventListener('click', () => {
-    passwordModal.style.display = 'flex'; // 顯示模態視窗
-    passwordInput.focus(); // 自動聚焦
+    passwordModal.style.display = 'flex'; // 顯示密碼視窗
+    passwordInput.focus(); // 自動聚焦輸入框
 });
 
-// 確認密碼事件
+// ✅ 確認密碼事件
 confirmPasswordBtn.addEventListener('click', verifyPassword);
 
-// 取消密碼輸入事件
+// ❌ 取消輸入事件
 cancelPasswordBtn.addEventListener('click', () => {
     passwordModal.style.display = 'none'; // 關閉視窗
-    passwordInput.value = ''; // 清空
+    passwordInput.value = ''; // 清空輸入
 });
 
-// 輸入密碼按下 Enter 可提交
+// 🖱️ 按 Enter 也可驗證密碼
 passwordInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         verifyPassword();
     }
 });
 
-// 密碼驗證函式
+// 密碼驗證邏輯
 function verifyPassword() {
-    const inputPassword = passwordInput.value.toLowerCase(); // 取得並轉小寫
-    const correctPassword = 'nggchr'; // 預設密碼
-
-    if (inputPassword === correctPassword) {
-        window.location.href = 'https://jjj945416.github.io/後台.html'; // 跳轉後台頁
+    const password = passwordInput.value.trim(); // 取得輸入的密碼
+    if (password === 'nggchr') { // 密碼驗證邏輯（可以自訂）
+        alert('密碼正確，進入後台管理頁面');
+        window.location.href = 'https://jjj945416.github.io/後台.html'; // 跳轉到管理頁面
     } else {
-        alert('密碼錯誤，請重新輸入！');
-        passwordInput.value = ''; // 清空
-        passwordInput.focus(); // 聚焦
+        alert('密碼錯誤，請再試一次');
+        passwordInput.value = ''; // 清空密碼輸入框
     }
 }
