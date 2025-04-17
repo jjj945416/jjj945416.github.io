@@ -24,9 +24,9 @@ body {
 .wheel-container {
     position: relative;
     /* 設置相對定位，方便放置指針等元素 */
-    width: 500px;
+    width: 550px;
     /* 設定輪盤寬度 */
-    height: 500px;
+    height: 550px;
     /* 設定輪盤高度 */
     margin-bottom: 30px;
     /* 設定輪盤底部邊距 */
@@ -103,7 +103,7 @@ body {
     /* 水平置中標籤 */
     transform-origin: 0% 0%;
     /* 設定旋轉中心 */
-    font-size: 18px;
+    font-size: 20px;
     /* 設定字型大小 */
     color: white;
     /* 設定字體顏色為白色 */
@@ -115,7 +115,7 @@ body {
     /* 文字右對齊 */
     padding-right: 10px;
     /* 文字右邊距 */
-    transform: rotate(var(--angle)) translateX(30px);
+    transform: rotate(var(--angle)) translateX(19%);
     /* 根據計算的角度旋轉標籤並移動 */
 }
 
