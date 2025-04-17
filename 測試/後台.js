@@ -56,11 +56,6 @@ function loadWinStats() {
   });
 }
 
-// 🧮 顯示剩餘旋轉次數（後台用）
-function loadRemainingSpins() {
-  const spins = localStorage.getItem("remainingSpins") || "0"; // 預設為 0
-  document.getElementById("remaining-count-backend").textContent = spins; // 顯示在頁面上
-}
 
 // 🔁 重設中獎次數確認 
 function confirmResetWinners() {
@@ -70,8 +65,13 @@ function confirmResetWinners() {
     loadWinStats(); // 重新載入中獎次數
   }
 }
+// 🧮 顯示剩餘旋轉次數（後台用）
+function loadRemainingSpins() {
+  const spins = localStorage.getItem("remainingSpins") || "0"; // 預設為 0
+  document.getElementById("remaining-count-backend").textContent = spins; // 顯示在頁面上
+}
 
-// 🌀 重設旋轉次數
+// 🔁 重設旋轉次數
 function resetSpins() {
   localStorage.setItem('remainingSpins', '2000'); // 重設次數
   localStorage.setItem('angleHitCounts', JSON.stringify(Array(10).fill(0))); // 重設每區中獎次數
@@ -80,10 +80,17 @@ function resetSpins() {
   window.dispatchEvent(new Event('resetSpins'));  // 發送事件
 }
 
-// 🔘 假設這是重設旋轉次數按鈕
-const resetButton = document.getElementById('reset-button');  // 獲取按鈕元素
-resetButton.addEventListener('click', resetSpins);  // 監聽按鈕點擊事件
+// 📡 監聽前台更新資料事件
+window.addEventListener('resetSpins', function () {
+  const spins = localStorage.getItem("remainingSpins");  // 取得剩餘旋轉次數
+  document.getElementById("remaining-count").textContent = spins;  // 更新前台剩餘次數顯示
+  alert("前台旋轉次數已成功重設！");  // 提示訊息
+});
 
+// 🔁 更新後台資料的函式範例
+function updateBackendData(spins) {
+  console.log(`同步資料到後端，剩餘旋轉次數: ${spins}`);  // 假設這裡是更新後台資料的邏輯
+}
 // 📡 監聽同步資料事件
 window.addEventListener("syncData", function () {
   const remainingSpins = localStorage.getItem("remainingSpins");  // 取得剩餘旋轉次數
@@ -98,10 +105,6 @@ window.addEventListener('storage', (event) => {
   }
 });
 
-// 🔁 更新後台資料的函式範例
-function updateBackendData(spins) {
-  console.log(`同步資料到後端，剩餘旋轉次數: ${spins}`);  // 假設這裡是更新後台資料的邏輯
-}
 
 // 📤 同步前台頁面資料
 function syncFrontend() {
