@@ -38,36 +38,69 @@ function loadGuestLog() { // 獲取來客數紀錄
 
 // 🟥 顯示中獎次數（合併相同獎項名稱）
 function loadWinStats() { 
-  const stats = getLocalStorageItem("winStats", []);  // 獲取中獎次數
-  const labels = getLocalStorageItem("prizeLabels", []);  // 獲取獎項名稱
-  const div = document.getElementById("win-stats"); // 獲取顯示區域
+  const stats = getLocalStorageItem("winStats", []);  // 取得每個格子的中獎次數陣列
+  const labels = getLocalStorageItem("prizeLabels", []);  // 取得獎項名稱陣列
+  const div = document.getElementById("win-stats"); // 顯示區域
 
-  if (stats.length === 0) { // 如果沒有中獎紀錄
-    div.innerHTML = "尚無中獎紀錄"; // 顯示提示訊息
+  if (stats.length === 0 || labels.length === 0) {
+    div.innerHTML = "尚無中獎紀錄"; // 無紀錄提示
     return;
   }
 
-  div.innerHTML = ""; // 清空顯示區域
+  // 🧮 建立一個合併結果物件
+  const mergedStats = {};
 
-  
-  // 計算每個獎項的中獎次數
   stats.forEach((count, index) => {
-    const p = document.createElement("p");  // 創建段落元素
-    const label = labels[index] || `區間 ${index + 1}`; // 獲取獎項名稱
-    p.textContent = `${label}：${count} 次`;  // 設定內容
-    div.appendChild(p); // 添加到顯示區域
+    const label = labels[index] || `區間 ${index + 1}`; // 取得該格獎項名稱
+    if (mergedStats[label]) {
+      mergedStats[label] += count; // 如果已存在該品名，就累加次數
+    } else {
+      mergedStats[label] = count; // 否則建立新記錄
+    }
   });
-}
 
+  // 清空顯示區域
+  div.innerHTML = "";
 
-// 🔁 重設中獎次數確認 
-function confirmResetWinners() {
-  if (checkPassword()) {
-    localStorage.removeItem("winStats");  // 清除中獎次數
-    alert("中獎次數已重設");  // 提示訊息
-    loadWinStats(); // 重新載入中獎次數
+  // 🖨️ 顯示合併後的結果
+  for (let label in mergedStats) {
+    const p = document.createElement("p");
+    p.textContent = `${label}：${mergedStats[label]} 次`;
+    div.appendChild(p);
   }
 }
+
+// 讀取中獎次數與獎項名稱
+function updatePrizeStatistics() {
+  // 從 localStorage 取得中獎次數與獎項名稱
+  const winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);
+  const prizeLabels = JSON.parse(localStorage.getItem('prizeLabels')) || [];
+
+  // 確保顯示的元素存在
+  const prizeList = document.getElementById('prize-list');
+  
+  // 清空舊的顯示內容
+  prizeList.innerHTML = '';
+  
+  // 檢查資料是否存在
+  if (prizeLabels.length > 0) {
+      prizeLabels.forEach((label, index) => {
+          // 創建顯示區塊
+          const prizeItem = document.createElement('div');
+          prizeItem.classList.add('prize-item');
+          
+          // 顯示獎項名稱與對應中獎次數
+          prizeItem.innerHTML = `${label}: ${winStats[index]} 次`;
+          
+          // 將結果加到列表中
+          prizeList.appendChild(prizeItem);
+      });
+  } else {
+      // 如果沒有獎項名稱，顯示提示
+      prizeList.innerHTML = '<p>尚未設置獎項。</p>';
+  }
+}
+
 // 🧮 顯示剩餘旋轉次數（後台用）
 function loadRemainingSpins() {
   const spins = localStorage.getItem("remainingSpins") || "0"; // 預設為 0
@@ -90,16 +123,6 @@ window.addEventListener('resetSpins', function () {
   alert("前台旋轉次數已成功重設！");  // 提示訊息
 });
 
-// 🔁 更新後台資料的函式範例
-function updateBackendData(spins) {
-  console.log(`同步資料到後端，剩餘旋轉次數: ${spins}`);  // 假設這裡是更新後台資料的邏輯
-}
-// 📡 監聽同步資料事件
-window.addEventListener("syncData", function () {
-  const remainingSpins = localStorage.getItem("remainingSpins");  // 取得剩餘旋轉次數
-  updateBackendData(remainingSpins);    // 同步資料到後端
-});
-
 // 🔄 監聽 localStorage 改變
 window.addEventListener('storage', (event) => {
   if (event.key === 'remainingSpins') {
@@ -108,27 +131,23 @@ window.addEventListener('storage', (event) => {
   }
 });
 
-
-// 📤 同步前台頁面資料
-function syncFrontend() {
-  const event = new CustomEvent("syncData");  // 創建自訂事件
-  window.dispatchEvent(event);  // 發送事件
-}
-
 // ✅ 初始化畫面與按鈕監聽
-window.onload = function () {
+function initializePage() {
   loadGuestLog();       // 載入來客數
   loadWinStats();       // 載入中獎資料
-  loadRemainingSpins(); // ✅ 顯示剩餘旋轉次數
+  loadRemainingSpins(); // 顯示剩餘旋轉次數
 
   document.getElementById("reset-spins-btn").addEventListener("click", () => {
     if (checkPassword()) {
       localStorage.setItem("remainingSpins", 2000); // 重設剩餘旋轉次數
-      loadRemainingSpins(); // ✅ 重設後也更新畫面
+      loadRemainingSpins(); // 更新畫面
       alert("前台旋轉次數已成功重設！");
     }
   });
-};
+}
+
+// 只在頁面加載時呼叫一次初始化
+window.onload = initializePage;
 
 // 💾 儲存與讀取 localStorage 的工具
 function getLocalStorageItem(key, defaultValue) {
