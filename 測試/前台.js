@@ -213,11 +213,10 @@ window.onload = function () {
   
     // 🔁 監聽來自後台的重設事件
     window.addEventListener('resetSpins', () => {
-      const newCount = localStorage.getItem('remainingSpins');  // 取得新的剩餘旋轉次數
-      document.getElementById("remaining-count").textContent = newCount;    // 更新顯示
+        const newCount = localStorage.getItem('remainingSpins');  // 取得新的剩餘旋轉次數
+        document.getElementById("remaining-count").textContent = newCount;    // 更新顯示
     });
-  };
-   
+};
 
 // ✅ 監聽自訂 syncData 事件，進行資料重新同步
 window.addEventListener('syncData', () => {
