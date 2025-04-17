@@ -89,10 +89,18 @@ const angleLimits = [
     { min: 249, max: 286, maxHits: Infinity, weight: 3 },
     { min: 286, max: 323, maxHits: Infinity, weight: 3 },
     { min: 323, max: 360, maxHits: Infinity, weight: 3 }
-  ];
-  
-  // 每區中獎次數（從 localStorage 取出或初始化）
-  let angleHitCounts = JSON.parse(localStorage.getItem('angleHitCounts')) || Array(angleLimits.length).fill(0);
+];
+
+// 每區中獎次數（從 localStorage 取出或初始化）
+let angleHitCounts = JSON.parse(localStorage.getItem('angleHitCounts')) || Array(angleLimits.length).fill(0);
+
+// 🔁 更新剩餘次數顯示
+function updateRemainingCount() {
+    const remainingCountElement = document.getElementById('remaining-count'); // 取得 DOM 元素
+    if (remainingCountElement) {
+        remainingCountElement.textContent = remainingSpins; // 顯示剩餘次數
+    }
+}
 
 // 【本地儲存】取得與設定函式
 function updateRemainingSpins() {
@@ -100,87 +108,74 @@ function updateRemainingSpins() {
     updateRemainingCount();  // 更新畫面
 }
 
-// 🔁 更新剩餘次數顯示
-function updateRemainingCount() {
-    if (remainingCountElement) {
-        remainingCountElement.textContent = remainingSpins;  // 顯示剩餘次數
-    }
-}
-
 // 🎯 頁面載入時初始化資料
 window.addEventListener('load', () => {
     updateRemainingSpins();  // 初始化剩餘次數
-    initLabels();  // 初始化標籤
+    initLabels();            // 初始化標籤
 });
 
 // 🎰 點擊旋轉按鈕的事件
 spinBtn.addEventListener('click', () => {
-    if (remainingSpins <= 0) {  // 檢查剩餘次數
-        alert("已達到最大旋轉次數！");  // 提示已達到最大旋轉次數
-        return; // 結束函式
+    if (remainingSpins <= 0) {
+        alert("已達到最大旋轉次數！");
+        return;
     }
-    if (hasSpun) {  // 檢查是否已經旋轉過
-        alert("本輪已轉完，請重新整理頁面再試一次！");  // 提示已經旋轉過
-        return; // 結束函式
+    if (hasSpun) {
+        alert("本輪已轉完，請重新整理頁面再試一次！");
+        return;
     }
-    hasSpun = true; // 設定為已旋轉狀態
 
-    // ✅ 使用自訂函式取得符合限制的角度 
-    const selectedDegree = getWeightedRandomDegree();   // 取得隨機角度
-    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`;    // 設定指針旋轉角度
+    hasSpun = true;
+    const selectedDegree = getWeightedRandomDegree();
+    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`;
 
-    // 更新剩餘次數
-    remainingSpins--;   // 減少剩餘次數
-    localStorage.setItem('remainingSpins', remainingSpins); // 儲存剩餘次數
-    updateRemainingCount(); // 更新畫面
+    remainingSpins--;
+    localStorage.setItem('remainingSpins', remainingSpins);
+    updateRemainingCount();
 
-    // 計算中獎區塊
-    const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));   // 計算中獎區塊索引
-    let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);   // 取得中獎統計資料
-    winStats[currentWinnerIndex]++; // 增加中獎次數
-    localStorage.setItem('winStats', JSON.stringify(winStats)); // 儲存中獎統計資料
+    const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));
+    let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);
+    winStats[currentWinnerIndex]++;
+    localStorage.setItem('winStats', JSON.stringify(winStats));
 });
 
 // 🎯 加權機率與次數限制的中獎角度取得函式
-function getWeightedRandomDegree() {    // 取得隨機角度
-    const availableAngles = []; // 可用的角度陣列
+function getWeightedRandomDegree() {
+    const availableAngles = [];
 
-    angleLimits.forEach((limit, index) => { // 遍歷每個限制
-        if (angleHitCounts[index] < limit.maxHits) {    // 檢查中獎次數是否小於上限
-            const weight = limit.weight || 1;   // 取得權重
-            for (let i = 0; i < weight * 100; i++) { // 乘100增加權重粒度   
-                const degree = Math.floor(Math.random() * (limit.max - limit.min)) + limit.min; // 隨機產生角度
-                availableAngles.push({ degree, index });    // 加入可用角度
+    angleLimits.forEach((limit, index) => {
+        if (angleHitCounts[index] < limit.maxHits) {
+            const weight = limit.weight || 1;
+            const granularity = 1000;
+            for (let i = 0; i < weight * granularity; i++) {
+                const degree = Math.floor(Math.random() * (limit.max - limit.min)) + limit.min;
+                availableAngles.push({ degree, index });
             }
         }
     });
 
-    if (availableAngles.length === 0) { // 如果沒有可用的角度
-        alert("所有受限區間皆已達上限！");  // 提示所有區間已達上限
-        return Math.floor(Math.random() * 360); // 回傳隨機角度作為備案
+    if (availableAngles.length === 0) {
+        alert("所有受限區間皆已達上限！");
+        return Math.floor(Math.random() * 360);
     }
 
     const chosen = availableAngles[Math.floor(Math.random() * availableAngles.length)];
     angleHitCounts[chosen.index]++;
-    localStorage.setItem('angleHitCounts', JSON.stringify(angleHitCounts)); // 儲存次數
-    return 360 * 6 + chosen.degree + 1; // 確保轉6圈 + 中獎角度
+    localStorage.setItem('angleHitCounts', JSON.stringify(angleHitCounts));
+    return 360 * 6 + chosen.degree + 1;
 }
-// 更新後台資料（這裡可以根據實際需求進行調整）
-// 發送同步事件
-const syncEvent = new Event('syncData');
-window.dispatchEvent(syncEvent);
 
-// 🔐 密碼驗證與管理頁面跳轉（無變更，保留原來的邏輯）
-const manageButton = document.getElementById('manage-button'); // 管理按鈕
-const passwordModal = document.getElementById('password-modal'); // 密碼輸入視窗
-const passwordInput = document.getElementById('password-input'); // 密碼輸入框
-const confirmPasswordBtn = document.getElementById('confirm-password'); // 確認按鈕
-const cancelPasswordBtn = document.getElementById('cancel-password'); // 取消按鈕
+// 🔐 密碼驗證與管理頁面跳轉
+const manageButton = document.getElementById('manage-button');
+const passwordModal = document.getElementById('password-modal');
+const passwordInput = document.getElementById('password-input');
+const confirmPasswordBtn = document.getElementById('confirm-password');
+const cancelPasswordBtn = document.getElementById('cancel-password');
 
 // ➕ 開啟密碼視窗
 manageButton.addEventListener('click', () => {
-    passwordModal.style.display = 'flex'; // 顯示密碼視窗
-    passwordInput.focus(); // 自動聚焦輸入框
+    passwordModal.style.display = 'flex';
+    passwordInput.focus();
 });
 
 // ✅ 確認密碼事件
@@ -188,8 +183,8 @@ confirmPasswordBtn.addEventListener('click', verifyPassword);
 
 // ❌ 取消輸入事件
 cancelPasswordBtn.addEventListener('click', () => {
-    passwordModal.style.display = 'none'; // 關閉視窗
-    passwordInput.value = ''; // 清空輸入
+    passwordModal.style.display = 'none';
+    passwordInput.value = '';
 });
 
 // 🖱️ 按 Enter 也可驗證密碼
@@ -199,33 +194,35 @@ passwordInput.addEventListener('keydown', (e) => {
     }
 });
 
-// 密碼驗證邏輯
 function verifyPassword() {
-    const password = passwordInput.value.trim(); // 取得輸入的密碼
-    if (password === 'nggchr') { // 密碼驗證邏輯（可以自訂）
+    const password = passwordInput.value.trim();
+    if (password === 'nggchr') {
         alert('密碼正確，進入後台管理頁面');
-        window.location.href = 'https://jjj945416.github.io/後台.html'; // 跳轉到管理頁面
+        window.location.href = 'https://jjj945416.github.io/後台.html';
     } else {
         alert('密碼錯誤，請再試一次');
-        passwordInput.value = ''; // 清空密碼輸入框
+        passwordInput.value = '';
     }
 }
-// 🛠️ 監聽後台頁面發送的 resetSpins 事件
+
+// ✅ 監聽後台發送的 resetSpins 事件
 window.addEventListener('resetSpins', () => {
-    updateRemainingSpins();  // 重新從 localStorage 取得並更新剩餘次數
-    hasSpun = false;  // 可選：重設旋轉狀態，防止使用者誤點擊
+    updateRemainingSpins();
+    hasSpun = false;
 });
 
-// 🛠️ 更新剩餘次數顯示的函式
-function updateRemainingSpins() {
+// ✅ 監聽自訂 syncData 事件，進行資料重新同步
+window.addEventListener('syncData', () => {
+    console.log('收到 syncData 事件，重新載入資料...');
     remainingSpins = parseInt(localStorage.getItem('remainingSpins')) || 2000;
-    updateRemainingCount();  // 更新顯示的剩餘次數
-}
+    angleHitCounts = JSON.parse(localStorage.getItem('angleHitCounts')) || Array(angleLimits.length).fill(0);
+    updateRemainingCount();
+});
 
-// 🛠️ 更新畫面顯示的剩餘次數
-function updateRemainingCount() {
-    const remainingCountElement = document.getElementById('remaining-count');
-    if (remainingCountElement) {
-        remainingCountElement.textContent = remainingSpins;  // 顯示剩餘次數
+// ✅ 監聽 localStorage 被其他頁面改變時觸發（同步資料）
+window.addEventListener('storage', (event) => {
+    if (event.key === 'remainingSpins' || event.key === 'angleHitCounts') {
+        console.log(`偵測到 ${event.key} 被更新，觸發 syncData`);
+        window.dispatchEvent(new Event('syncData'));
     }
-}
+});
