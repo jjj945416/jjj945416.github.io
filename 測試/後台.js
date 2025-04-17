@@ -62,20 +62,39 @@ function loadWinStats() {
   // });
 }
 
-// 🔁 重設中獎次數確認
-function confirmResetWinners() {
-  if (checkPassword()) {
-    localStorage.removeItem("winStats");
-    alert("中獎次數已重設");
-    loadWinStats();
+// 🔁 重設中獎次數確認 
+function confirmResetWinners() {  // 確認重設中獎次數
+  if (checkPassword()) {  // 如果密碼正確
+    localStorage.removeItem("winStats");  // 清除中獎次數
+    alert("中獎次數已重設");  // 提示重設成功
+    loadWinStats(); // 載入中獎統計資料
   }
 }
 
+// 例如在後台頁面處理重設旋轉次數的按鈕事件中
+function resetSpins() { // 重設旋轉次數
+  localStorage.setItem('remainingSpins', '2000'); // 更新旋轉次數為 2000
+  localStorage.setItem('angleHitCounts', JSON.stringify(Array(10).fill(0))); // 重設每個角度區間的中獎次數
+
+  // 發送自訂事件，通知前台頁面更新
+  window.dispatchEvent(new Event('resetSpins'));  // 發送重設事件
+}
+
+// 假設這是按鈕觸發重設
+const resetButton = document.getElementById('reset-button');  // 假設這是重設按鈕的 ID
+resetButton.addEventListener('click', resetSpins);  // 監聽重設事件
+
 // 📌 監聽同步資料事件
 window.addEventListener("syncData", function () {
-  const remainingSpins = localStorage.getItem("remainingSpins");
-  updateBackendData(remainingSpins);
+  const remainingSpins = localStorage.getItem("remainingSpins");  // 取得剩餘旋轉次數
+  updateBackendData(remainingSpins); // 假設你有這個同步資料的後端函式
 });
+
+// 🔁 更新後台資料的函式範例
+function updateBackendData(spins) {
+  // 這裡可以加上同步後端的邏輯，傳送 remainingSpins 到後端
+  console.log(`同步資料到後端，剩餘旋轉次數: ${spins}`);
+}
 
 // 同步前台頁面資料
 function syncFrontend() {
