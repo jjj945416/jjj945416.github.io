@@ -143,10 +143,22 @@ spinBtn.addEventListener('click', () => {
     updateRemainingCount();
 
     // 更新中獎區間次數
-    const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));
-    let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);
-    winStats[currentWinnerIndex]++;
-    localStorage.setItem('winStats', JSON.stringify(winStats));
+const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));   // 計算中獎區間索引
+
+// 取得中獎次數陣列（若 localStorage 中沒有就初始化）
+let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);
+
+// 將該區間的中獎次數 +1
+winStats[currentWinnerIndex]++;
+
+// 儲存更新後的中獎次數陣列到 localStorage
+localStorage.setItem('winStats', JSON.stringify(winStats));
+
+// ✅ 初始化獎項名稱陣列（只執行一次）
+if (!localStorage.getItem('prizeLabels')) {
+    localStorage.setItem('prizeLabels', JSON.stringify(options)); // 將目前獎項名稱陣列存入
+}
+
 });
 
 // 🎯 加權機率與次數限制的中獎角度取得函式
