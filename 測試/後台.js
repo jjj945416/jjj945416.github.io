@@ -73,25 +73,28 @@ function loadRemainingSpins() {
 
 // 🔁 重設剩餘旋轉次數
 function resetSpins() {
-  localStorage.setItem('remainingSpins', '2000');
-  window.dispatchEvent(new Event('resetSpins'));
+  localStorage.setItem('remainingSpins', '2000'); // 設定為初始值
+  window.dispatchEvent(new Event('resetSpins')); // 觸發事件讓前台也能更新
+  alert("旋轉次數已成功重設！"); // 顯示提示
 }
 
 // 🧹 重設中獎紀錄
 function resetWinStats() {
   localStorage.setItem('winStats', JSON.stringify(Array(10).fill(0))); // 重設為全 0
-  loadWinStats(); // 更新顯示
-  alert("中獎紀錄已成功重設！");
+  loadWinStats(); // 更新畫面
+  alert("中獎紀錄已成功重設！"); // 顯示提示
 }
 
 // 📡 監聽前台更新資料事件
 window.addEventListener('resetSpins', function () {
   const spins = localStorage.getItem("remainingSpins");
-  document.getElementById("remaining-count").textContent = spins;
-  alert("前台旋轉次數已成功重設！");
+  const display = document.getElementById("remaining-count");
+  if (display) {
+    display.textContent = spins;
+  }
 });
 
-// 🔄 監聽 localStorage 改變
+// 🔄 監聽 localStorage 改變（更新後台顯示）
 window.addEventListener('storage', (event) => {
   if (event.key === 'remainingSpins') {
     const updatedRemainingSpins = localStorage.getItem('remainingSpins');
@@ -106,18 +109,24 @@ function initializePage() {
   loadRemainingSpins();
 
   // 監聽重設旋轉次數按鈕
-  document.getElementById("reset-spins-btn").addEventListener("click", () => {
-    if (checkPassword()) {
-      resetSpins();
-    }
-  });
+  const resetSpinsBtn = document.getElementById("reset-spins-btn");
+  if (resetSpinsBtn) {
+    resetSpinsBtn.addEventListener("click", () => {
+      if (checkPassword()) {
+        resetSpins();
+      }
+    });
+  }
 
   // 監聽重設中獎紀錄按鈕
-  document.getElementById("reset-win-stats-btn").addEventListener("click", () => {
-    if (checkPassword()) {
-      resetWinStats();
-    }
-  });
+  const resetWinStatsBtn = document.getElementById("reset-win-stats-btn");
+  if (resetWinStatsBtn) {
+    resetWinStatsBtn.addEventListener("click", () => {
+      if (checkPassword()) {
+        resetWinStats();
+      }
+    });
+  }
 }
 
 // 💾 儲存與讀取 localStorage 的工具
