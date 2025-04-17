@@ -89,7 +89,13 @@ window.addEventListener("syncData", function () {
   const remainingSpins = localStorage.getItem("remainingSpins");  // 取得剩餘旋轉次數
   updateBackendData(remainingSpins); // 假設你有這個同步資料的後端函式
 });
-
+// 在後台頁面中監聽 localStorage 的變動
+window.addEventListener('storage', (event) => {
+  if (event.key === 'remainingSpins') {
+      const updatedRemainingSpins = localStorage.getItem('remainingSpins');
+      document.getElementById('remaining-count-backend').textContent = updatedRemainingSpins; // 更新後台顯示
+  }
+});
 // 🔁 更新後台資料的函式範例
 function updateBackendData(spins) {
   // 這裡可以加上同步後端的邏輯，傳送 remainingSpins 到後端
