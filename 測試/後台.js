@@ -38,38 +38,18 @@ function loadGuestLog() { // 獲取來客數紀錄
 
 // 🟥 顯示中獎次數（合併相同獎項名稱）
 function loadWinStats() { 
-  const stats = getLocalStorageItem("winStats", []);  // 取得每個格子的中獎次數陣列
-  const labels = getLocalStorageItem("prizeLabels", []);  // 取得獎項名稱陣列
-  const div = document.getElementById("win-stats"); // 顯示區域
+  const stats = getLocalStorageItem("winStats", []);  // 獲取中獎次數
+  const labels = getLocalStorageItem("prizeLabels", []);  // 獲取獎項名稱
+  const div = document.getElementById("win-stats"); // 獲取顯示區域
 
-  if (stats.length === 0 || labels.length === 0) {
-    div.innerHTML = "尚無中獎紀錄"; // 無紀錄提示
+  if (stats.length === 0) { // 如果沒有中獎紀錄
+    div.innerHTML = "尚無中獎紀錄"; // 顯示提示訊息
     return;
   }
 
-  // 🧮 建立一個合併結果物件
-  const mergedStats = {};
+  div.innerHTML = ""; // 清空顯示區域
 
-  stats.forEach((count, index) => {
-    const label = labels[index] || `區間 ${index + 1}`; // 取得該格獎項名稱
-    if (mergedStats[label]) {
-      mergedStats[label] += count; // 如果已存在該品名，就累加次數
-    } else {
-      mergedStats[label] = count; // 否則建立新記錄
-    }
-  });
-
-  // 清空顯示區域
-  div.innerHTML = "";
-
-  // 🖨️ 顯示合併後的結果
-  for (let label in mergedStats) {
-    const p = document.createElement("p");
-    p.textContent = `${label}：${mergedStats[label]} 次`;
-    div.appendChild(p);
-  }
-}
-
+  
   // 計算每個獎項的中獎次數
   stats.forEach((count, index) => {
     const p = document.createElement("p");  // 創建段落元素
@@ -77,6 +57,7 @@ function loadWinStats() {
     p.textContent = `${label}：${count} 次`;  // 設定內容
     div.appendChild(p); // 添加到顯示區域
   });
+}
 
 
 // 🔁 重設中獎次數確認 
