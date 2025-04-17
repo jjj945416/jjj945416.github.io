@@ -134,21 +134,14 @@ spinBtn.addEventListener('click', () => {
 
     // 更新指針的旋轉角度
     pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`;    // 設定指針旋轉
-// 開始旋轉按鈕事件
-document.getElementById("start-spin-btn").addEventListener("click", () => {
-  if (remainingSpins <= 0) {
-    alert("剩餘次數不足！");
-    return;
-  }
+
     // 減少剩餘次數並更新 localStorage
     remainingSpins--;
     localStorage.setItem('remainingSpins', remainingSpins);  // 確保更新到 localStorage
 
     // 更新畫面上的剩餘次數顯示
     updateRemainingCount();
-// 立即更新後台顯示
-  loadRemainingSpins(); // 呼叫後台更新剩餘次數顯示
-});
+    
     // 更新中獎區間次數
 const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));   // 計算中獎區間索引
 
