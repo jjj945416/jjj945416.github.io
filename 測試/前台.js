@@ -77,7 +77,22 @@ function initLabels() {
         labelsContainer.appendChild(label); // 加入容器
     });
 }
-
+// 各區間的角度範圍、最大次數、權重設定
+const angleLimits = [
+    { min: 0, max: 37, maxHits: Infinity, weight: 2 },
+    { min: 37, max: 74, maxHits: Infinity, weight: 3 },
+    { min: 74, max: 111, maxHits: Infinity, weight: 3 },
+    { min: 111, max: 148, maxHits: Infinity, weight: 2 },
+    { min: 148, max: 175, maxHits: 20, weight: 0.24 }, // 限制中獎次數
+    { min: 175, max: 212, maxHits: Infinity, weight: 3 },
+    { min: 212, max: 249, maxHits: Infinity, weight: 2 },
+    { min: 249, max: 286, maxHits: Infinity, weight: 3 },
+    { min: 286, max: 323, maxHits: Infinity, weight: 3 },
+    { min: 323, max: 360, maxHits: Infinity, weight: 3 }
+  ];
+  
+  // 每區中獎次數（從 localStorage 取出或初始化）
+  let angleHitCounts = JSON.parse(localStorage.getItem('angleHitCounts')) || Array(angleLimits.length).fill(0);
 
 // 【本地儲存】取得與設定函式
 function updateRemainingSpins() {
@@ -100,31 +115,56 @@ window.addEventListener('load', () => {
 
 // 🎰 點擊旋轉按鈕的事件
 spinBtn.addEventListener('click', () => {
-    if (remainingSpins <= 0) {
-        alert("已達到最大旋轉次數！");
-        return;
+    if (remainingSpins <= 0) {  // 檢查剩餘次數
+        alert("已達到最大旋轉次數！");  // 提示已達到最大旋轉次數
+        return; // 結束函式
     }
-    if (hasSpun) {
-        alert("本輪已轉完，請重新整理頁面再試一次！");
-        return;
+    if (hasSpun) {  // 檢查是否已經旋轉過
+        alert("本輪已轉完，請重新整理頁面再試一次！");  // 提示已經旋轉過
+        return; // 結束函式
     }
-    hasSpun = true; // 設定為已旋轉
+    hasSpun = true; // 設定為已旋轉狀態
 
-    const selectedDegree = 360 * 6 + Math.floor(Math.random() * 360) + 1; // 旋轉角度（6圈+隨機）
-    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`; // 設定旋轉效果
+    // ✅ 使用自訂函式取得符合限制的角度 
+    const selectedDegree = getWeightedRandomDegree();   // 取得隨機角度
+    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`;    // 設定指針旋轉角度
 
     // 更新剩餘次數
-    remainingSpins--; // 次數減一
-    localStorage.setItem('remainingSpins', remainingSpins); // 更新 localStorage 中的剩餘次數
-    updateRemainingCount(); // 更新畫面顯示
+    remainingSpins--;   // 減少剩餘次數
+    localStorage.setItem('remainingSpins', remainingSpins); // 儲存剩餘次數
+    updateRemainingCount(); // 更新畫面
 
     // 計算中獎區塊
-    const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length)); // 計算中獎索引
-    let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);   // 讀取中獎次數
+    const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));   // 計算中獎區塊索引
+    let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);   // 取得中獎統計資料
     winStats[currentWinnerIndex]++; // 增加中獎次數
-    localStorage.setItem('winStats', JSON.stringify(winStats)); // 儲存中獎次數
+    localStorage.setItem('winStats', JSON.stringify(winStats)); // 儲存中獎統計資料
 });
 
+// 🎯 加權機率與次數限制的中獎角度取得函式
+function getWeightedRandomDegree() {    // 取得隨機角度
+    const availableAngles = []; // 可用的角度陣列
+
+    angleLimits.forEach((limit, index) => { // 遍歷每個限制
+        if (angleHitCounts[index] < limit.maxHits) {    // 檢查中獎次數是否小於上限
+            const weight = limit.weight || 1;   // 取得權重
+            for (let i = 0; i < weight * 100; i++) { // 乘100增加權重粒度   
+                const degree = Math.floor(Math.random() * (limit.max - limit.min)) + limit.min; // 隨機產生角度
+                availableAngles.push({ degree, index });    // 加入可用角度
+            }
+        }
+    });
+
+    if (availableAngles.length === 0) { // 如果沒有可用的角度
+        alert("所有受限區間皆已達上限！");  // 提示所有區間已達上限
+        return Math.floor(Math.random() * 360); // 回傳隨機角度作為備案
+    }
+
+    const chosen = availableAngles[Math.floor(Math.random() * availableAngles.length)];
+    angleHitCounts[chosen.index]++;
+    localStorage.setItem('angleHitCounts', JSON.stringify(angleHitCounts)); // 儲存次數
+    return 360 * 6 + chosen.degree + 1; // 確保轉6圈 + 中獎角度
+}
 // 更新後台資料（這裡可以根據實際需求進行調整）
 // 發送同步事件
 const syncEvent = new Event('syncData');
