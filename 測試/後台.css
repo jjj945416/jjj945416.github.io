@@ -10,37 +10,33 @@ body {
 }
 
 .container {
-  /* 整體容器 */
   display: flex;
-  /* 使用 Flex 排版 */
+  /* 使用flexbox排列內容 */
   flex-direction: column;
-  /* 垂直排列 */
+  /* 垂直排列元素 */
   align-items: center;
-  /* 置中對齊 */
+  /* 水平置中 */
   justify-content: center;
   /* 垂直置中 */
   min-height: 100vh;
-  /* 最小高度為整個畫面高度 */
-  gap: 20px;
-  /* 區塊間距 */
+  /* 最小高度為視窗高度 */
+  gap: 10px;
+  /* 元素間距 */
 }
 
 .card {
-  /* 卡片樣式 */
   background-color: #ffffff;
-  /* 白色卡片背景 */
+  /* 白色背景 */
   border-radius: 12px;
   /* 圓角邊框 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* 陰影效果 */
+  /* 輕微陰影 */
   padding: 20px;
   /* 內距 */
-  width: 33%;
-  /* 寬度為畫面三分之一 */
-  min-width: 300px;
-  /* 最小寬度限制 */
+  width: 450px;
+  /* ✅ 固定寬度 */
   box-sizing: border-box;
-  /* 內距不超出寬度 */
+  /* 包含內距和邊框在內的寬度計算 */
 }
 
 h2 {
@@ -79,28 +75,29 @@ input[type="date"] {
 }
 
 button {
-  /* 按鈕樣式 */
-  margin-top: 10px;
-  /* 與上方間距 */
+  display: block;
+  /* 按鈕變為區塊元素，可使用 margin auto */
+  margin: 10px auto 0;
+  /* 上 10px，自動左右置中，下 0 */
   padding: 10px 15px;
-  /* 內距 */
+  /* 上下 10px，左右 15px */
   border: none;
-  /* 移除邊框 */
+  /* 無邊框 */
   border-radius: 8px;
-  /* 圓角按鈕 */
-  background-color: #4CAF50;
-  /* 綠色背景 */
+  /* 圓角邊框 */
+  background-color: #2493be;
+  /* 藍色背景 */
   color: white;
   /* 白色文字 */
   cursor: pointer;
-  /* 滑鼠游標為指標 */
+  /* 滑鼠懸停變成手指形狀 */
   transition: background-color 0.3s;
-  /* 滑動變色效果 */
 }
+
 
 button:hover {
   /* 滑鼠懸停時變色 */
-  background-color: #45a049;
+  background-color: #177296;
   /* 滑過時變色 */
 }
 
