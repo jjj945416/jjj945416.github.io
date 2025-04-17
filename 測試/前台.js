@@ -11,7 +11,6 @@ const options = [
     { text: "餐飲折扣劵", offset: 15 },
     { text: "餐飲折扣劵", offset: 17 }
 ];
-
 // 【DOM元素取得】
 const spinBtn = document.getElementById('spin-btn'); // 確保這是你的旋轉按鈕的 ID
 const pointer = document.getElementById('pointer'); // 確保這是你的指針元素的 ID
@@ -19,11 +18,11 @@ const labelsContainer = document.getElementById('labels'); // 確保這裡是正
 const remainingCountElement = document.getElementById('remaining-count'); // 取得剩餘次數顯示元素
 let remainingSpins = parseInt(localStorage.getItem('remainingSpins')) || 2000; // 預設為 2000
 let hasSpun = false; // 確保 hasSpun 是未旋轉狀態
-
-// 【初始化標籤】
+/// 【初始化標籤】
 function initLabels() {
     labelsContainer.innerHTML = ''; // 清空標籤容器
     const angleStep = 360 / options.length; // 每個標籤所佔角度
+    console.log(`每個標籤佔角度: ${angleStep}°`); // 查看每個標籤角度
 
     // 遍歷每個獎項並建立標籤
     options.forEach((item, i) => {
@@ -31,6 +30,7 @@ function initLabels() {
         label.className = 'label'; // 加入 label class
         const indexOffset = (i + 1) % options.length; // 計算偏移索引
         const angle = indexOffset * angleStep + angleStep / 2 - 18 + item.offset; // 計算標籤旋轉角度
+        console.log(`標籤 ${i + 1}: 角度 = ${angle}°`); // 顯示每個標籤的角度
 
         // 處理特殊標籤的顯示方式
         if (i === 1) {
@@ -77,6 +77,8 @@ function initLabels() {
         labelsContainer.appendChild(label); // 加入容器
     });
 }
+
+
 // 各區間的角度範圍、最大次數、權重設定
 const angleLimits = [
     { min: 0, max: 37, maxHits: Infinity, weight: 2 },
@@ -94,45 +96,53 @@ const angleLimits = [
 // 每區中獎次數（從 localStorage 取出或初始化）
 let angleHitCounts = JSON.parse(localStorage.getItem('angleHitCounts')) || Array(angleLimits.length).fill(0);
 
-// 🔁 更新剩餘次數顯示
-function updateRemainingCount() {
-    const remainingCountElement = document.getElementById('remaining-count'); // 取得 DOM 元素
-    if (remainingCountElement) {
-        remainingCountElement.textContent = remainingSpins; // 顯示剩餘次數
-    }
-}
-
-// 【本地儲存】取得與設定函式
+// 取得剩餘次數並更新畫面顯示的函式
 function updateRemainingSpins() {
+    // 從 localStorage 讀取剩餘次數，若無則設定為初始值 2000
     remainingSpins = parseInt(localStorage.getItem('remainingSpins')) || 2000;
-    updateRemainingCount();  // 更新畫面
+
+    // 確保 remainingCount 變數正確初始化並更新畫面上的剩餘次數顯示
+    const remainingCount = document.getElementById('remaining-count'); // 確保這是正確的元素 ID
+    remainingCount.textContent = `剩餘次數: ${remainingSpins}`; // 顯示剩餘次數
 }
 
-// 🎯 頁面載入時初始化資料
-window.addEventListener('load', () => {
-    updateRemainingSpins();  // 初始化剩餘次數
-    initLabels();            // 初始化標籤
-});
+// 更新畫面顯示剩餘次數的函式（只有一個，避免重複定義）
+function updateRemainingCount() {
+    const remainingCount = document.getElementById('remaining-count'); // 確保這是正確的元素 ID
+    remainingCount.textContent = `${remainingSpins}`; // 顯示剩餘次數
+}
 
-// 🎰 點擊旋轉按鈕的事件
+// 旋轉按鈕的點擊事件
 spinBtn.addEventListener('click', () => {
+    // 若剩餘次數為 0，顯示警告並停止執行
     if (remainingSpins <= 0) {
         alert("已達到最大旋轉次數！");
         return;
     }
+
+    // 防止連續點擊
     if (hasSpun) {
         alert("本輪已轉完，請重新整理頁面再試一次！");
         return;
     }
 
+    // 設定為已旋轉，防止重複旋轉
     hasSpun = true;
-    const selectedDegree = getWeightedRandomDegree();
-    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`;
 
+    // 計算隨機選中的角度
+    const selectedDegree = getWeightedRandomDegree();
+
+    // 更新指針的旋轉角度
+    pointer.style.transform = `translate(-50%, -100%) rotate(${selectedDegree}deg)`;    // 設定指針旋轉
+
+    // 減少剩餘次數並更新 localStorage
     remainingSpins--;
-    localStorage.setItem('remainingSpins', remainingSpins);
+    localStorage.setItem('remainingSpins', remainingSpins);  // 確保更新到 localStorage
+
+    // 更新畫面上的剩餘次數顯示
     updateRemainingCount();
 
+    // 更新中獎區間次數
     const currentWinnerIndex = Math.floor(selectedDegree % 360 / (360 / options.length));
     let winStats = JSON.parse(localStorage.getItem('winStats')) || new Array(options.length).fill(0);
     winStats[currentWinnerIndex]++;
@@ -164,11 +174,8 @@ function getWeightedRandomDegree() {
     localStorage.setItem('angleHitCounts', JSON.stringify(angleHitCounts));
     return 360 * 6 + chosen.degree + 1;
 }
-// 當剩餘次數減少時，更新 localStorage
-function updateRemainingSpins() {
-    remainingSpins--;   // 減少剩餘次數
-    localStorage.setItem('remainingSpins', remainingSpins); // 更新 localStorage
-}
+
+
 // 🔐 密碼驗證與管理頁面跳轉
 const manageButton = document.getElementById('manage-button');
 const passwordModal = document.getElementById('password-modal');
@@ -211,7 +218,8 @@ function verifyPassword() {
 }
 // ❌ 點擊外部關閉視窗
 window.onload = function () {
-    // 顯示最新次數
+    // 更新剩餘次數
+    updateRemainingSpins();
     const spins = localStorage.getItem("remainingSpins") || 0;  // 取得剩餘旋轉次數
     document.getElementById("remaining-count").textContent = spins; // 顯示剩餘次數
   
@@ -237,3 +245,10 @@ window.addEventListener('storage', (event) => {
         window.dispatchEvent(new Event('syncData'));
     }
 });
+window.onload = function () {
+    initLabels(); // 呼叫初始化標籤函式
+    updateRemainingSpins(); // 更新剩餘次數
+    const spins = localStorage.getItem("remainingSpins") || 0;
+    document.getElementById("remaining-count").textContent = spins;
+    // 其他初始化邏輯
+};
