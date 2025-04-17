@@ -209,12 +209,12 @@ function verifyPassword() {
 window.onload = function () {
     // 顯示最新次數
     const spins = localStorage.getItem("remainingSpins") || 0;  // 取得剩餘旋轉次數
-    document.getElementById("remaining-spins").textContent = spins; // 顯示剩餘次數
+    document.getElementById("remaining-count").textContent = spins; // 顯示剩餘次數
   
     // 🔁 監聽來自後台的重設事件
     window.addEventListener('resetSpins', () => {
       const newCount = localStorage.getItem('remainingSpins');  // 取得新的剩餘旋轉次數
-      document.getElementById("remaining-spins").textContent = newCount;    // 更新顯示
+      document.getElementById("remaining-count").textContent = newCount;    // 更新顯示
     });
   };
    
