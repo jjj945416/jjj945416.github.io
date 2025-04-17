@@ -164,7 +164,11 @@ function getWeightedRandomDegree() {
     localStorage.setItem('angleHitCounts', JSON.stringify(angleHitCounts));
     return 360 * 6 + chosen.degree + 1;
 }
-
+// 當剩餘次數減少時，更新 localStorage
+function updateRemainingSpins() {
+    remainingSpins--;   // 減少剩餘次數
+    localStorage.setItem('remainingSpins', remainingSpins); // 更新 localStorage
+}
 // 🔐 密碼驗證與管理頁面跳轉
 const manageButton = document.getElementById('manage-button');
 const passwordModal = document.getElementById('password-modal');
