@@ -194,22 +194,30 @@ passwordInput.addEventListener('keydown', (e) => {
     }
 });
 
+// 🔒 密碼驗證函式
 function verifyPassword() {
     const password = passwordInput.value.trim();
     if (password === 'nggchr') {
         alert('密碼正確，進入後台管理頁面');
-         window.open('https://jjj945416.github.io/後台.html', '_blank'); // ⬅️ 這裡改成另開一頁
+        window.open('https://jjj945416.github.io/後台.html', '_blank'); // ⬅️ 這裡改成另開一頁
     } else {
         alert('密碼錯誤，請再試一次');
         passwordInput.value = '';
     }
 }
-
-// ✅ 監聽後台發送的 resetSpins 事件
-window.addEventListener('resetSpins', () => {
-    updateRemainingSpins();
-    hasSpun = false;
-});
+// ❌ 點擊外部關閉視窗
+window.onload = function () {
+    // 顯示最新次數
+    const spins = localStorage.getItem("remainingSpins") || 0;  // 取得剩餘旋轉次數
+    document.getElementById("remaining-spins").textContent = spins; // 顯示剩餘次數
+  
+    // 🔁 監聽來自後台的重設事件
+    window.addEventListener('resetSpins', () => {
+      const newCount = localStorage.getItem('remainingSpins');  // 取得新的剩餘旋轉次數
+      document.getElementById("remaining-spins").textContent = newCount;    // 更新顯示
+    });
+  };
+   
 
 // ✅ 監聽自訂 syncData 事件，進行資料重新同步
 window.addEventListener('syncData', () => {
