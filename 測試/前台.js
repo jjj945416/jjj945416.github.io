@@ -198,7 +198,7 @@ function verifyPassword() {
     const password = passwordInput.value.trim();
     if (password === 'nggchr') {
         alert('密碼正確，進入後台管理頁面');
-        window.location.href = 'https://jjj945416.github.io/後台.html';
+         window.open('https://jjj945416.github.io/後台.html', '_blank'); // ⬅️ 這裡改成另開一頁
     } else {
         alert('密碼錯誤，請再試一次');
         passwordInput.value = '';
