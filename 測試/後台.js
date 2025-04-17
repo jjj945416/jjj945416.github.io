@@ -37,28 +37,27 @@ function loadGuestLog() {
 }
 
 // 🟥 顯示中獎次數（合併相同獎項名稱）
-function loadWinStats() {
-  const stats = getLocalStorageItem("winStats", []);
-  const labels = getLocalStorageItem("prizeLabels", []);
-  const div = document.getElementById("win-stats");
+function loadWinStats() { 
+  const stats = getLocalStorageItem("winStats", []);  // 獲取中獎次數
+  const labels = getLocalStorageItem("prizeLabels", []);  // 獲取獎項名稱
+  const div = document.getElementById("win-stats"); // 獲取顯示區域
 
-  if (stats.length === 0) {
-    div.innerHTML = "尚無中獎紀錄";
-    return;
+  if (stats.length === 0) { // 如果沒有中獎紀錄
+    div.innerHTML = "尚無中獎紀錄"; // 顯示提示訊息
+    return; // 顯示提示訊息
   }
 
-  div.innerHTML = "";
+  div.innerHTML = ""; // 清空顯示區域
   stats.forEach((count, index) => {
     const p = document.createElement("p");
     const label = labels[index] || `區間 ${index + 1}`;
     p.textContent = `${label}：${count} 次`;
     div.appendChild(p);
   });
-
   // 🔴 注意：這段 mergedStats 的程式碼不完整，建議移除或補上相關邏輯
   // Object.entries(mergedStats).forEach(([label, count]) => {
   //   const p = document.createElement("p");
-  //   p.textContent = `${label}：${count} 次`;
+  //   p.textContent = ${label}：${count} 次;
   //   div.appendChild(p);
   // });
 }
